@@ -4,6 +4,7 @@
 Este projeto tem como objetivo desenvolver uma solução digital voltada para cuidados paliativos, em parceria com um profissional de enfermagem. O foco é fornecer informações essenciais para pacientes e familiares, ajudando a identificar quando é necessário procurar atendimento médico, especialmente em situações de agravamento da condição do paciente.
 
 Fase 1 – Site Informativo
+
 Na fase inicial, o projeto foi concebido como um site, com os seguintes objetivos principais:
 Disponibilizar conteúdos explicativos sobre cuidados paliativos;
 Criar um guia com sinais de alerta para busca de atendimento médico;
