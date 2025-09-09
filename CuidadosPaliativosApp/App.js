@@ -3,20 +3,30 @@ import { SafeAreaView, View, Text, StyleSheet, StatusBar, TouchableOpacity } fro
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Image } from 'react-native';
-import logo from './src/assets/img/logo.jpg';
+import prontuario from './src/assets/img/prontuario.jpg';
+import documento from './src/assets/img/documento.jpg';
+import sintomas from './src/assets/img/sintomas.jpg';
+import informacoes from './src/assets/img/informações.jpg';
 
 
-const MenuButton = ({iconName, iconLibrary, text}) => {
-  const IconComponent = iconLibrary === 'Material' ? MaterialCommunityIcons : Icon;
+const MenuButton = ({ text, image }) => {
   return (
     <TouchableOpacity style={styles.menuButton}>
-      
-        <Image source={logo} style={{ width: 100, height: 100, marginBottom: 10 }} />
-     
-      <Text style={styles.menuButtonText}>{text}</Text>
+      <Image
+        source={image} 
+        style={{ width: 80, height: 80, marginBottom: 12 }}
+      />
+      <Text
+        style={styles.menuButtonText}
+        numberOfLines={2}
+        ellipsizeMode="tail"
+      >
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 };
+
 
 const App = () => {
   return (
@@ -39,12 +49,12 @@ const App = () => {
 
         <View style={styles.mainContent}>
           <View style={styles.menuRow}>
-            <MenuButton iconName="thermometer-half" text="DIÁRIO DE SINTOMAS" />
-            <MenuButton iconName="information-outline" iconLibrary="Material" text="INFORMAÇÕES SOBRE O TRATAMENTO" />
+            <MenuButton iconName="thermometer-half" text="DIÁRIO DE SINTOMAS" image = {sintomas} />
+            <MenuButton iconName="information-outline" iconLibrary="Material" text="INFORMAÇÕES SOBRE O TRATAMENTO" image = {informacoes}/>
           </View>
           <View style={styles.menuRow}>
-            <MenuButton iconName="clipboard-list" text="MEU PRONTUÁRIO" />
-            <MenuButton iconName="file-document-edit-outline" iconLibrary="Material" text="DOCUMENTOS CLÍNICOS" />
+            <MenuButton iconName="clipboard-list" text="MEU PRONTUÁRIO" image = {prontuario} />
+            <MenuButton iconName="file-document-edit-outline" iconLibrary="Material" text="DOCUMENTOS CLÍNICOS" image = {documento} />
           </View>
         </View>
 
@@ -138,11 +148,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   menuButtonText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#555',
     textAlign: 'center',
     marginTop: 5,
+
   },
   navBar: {
     flexDirection: 'row',
