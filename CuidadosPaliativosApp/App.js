@@ -2,15 +2,17 @@ import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Image } from 'react-native';
+import logo from './src/assets/img/logo.jpg';
 
 
 const MenuButton = ({iconName, iconLibrary, text}) => {
   const IconComponent = iconLibrary === 'Material' ? MaterialCommunityIcons : Icon;
   return (
     <TouchableOpacity style={styles.menuButton}>
-      <View style={styles.iconContainer}>
-        <IconComponent name={iconName} size={40} color="#E36464" />
-      </View>
+      
+        <Image source={logo} style={{ width: 100, height: 100, marginBottom: 10 }} />
+     
       <Text style={styles.menuButtonText}>{text}</Text>
     </TouchableOpacity>
   );
