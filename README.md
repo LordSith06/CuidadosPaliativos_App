@@ -13,6 +13,7 @@ Oferece uma interface simples e intuitiva para facilitar a navegação.
 
 
 Fase 2 – Aplicativo Mobile
+
 Após a conclusão da primeira fase, acordos-se a oportunidade de ampliar o alcance e a praticidade da solução, transformando o projeto em um aplicativo móvel.
 Os principais diferenciais da versão em app serão:
 Acesso rápido às informações em qualquer lugar;
