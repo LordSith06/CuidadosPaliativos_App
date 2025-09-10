@@ -1,72 +1,82 @@
-import React from 'react';  
+import React from 'react';
 import { SafeAreaView, View, Text, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Image } from 'react-native';
-import logo from './src/assets/img/logo.jpg';
+import prontuario from './src/assets/img/prontuario.jpg';
+import documento from './src/assets/img/documento.jpg';
+import sintomas from './src/assets/img/sintomas.jpg';
+import informacoes from './src/assets/img/informações.jpg';
 
 
-const MenuButton = ({iconName, iconLibrary, text}) => {
-  const IconComponent = iconLibrary === 'Material' ? MaterialCommunityIcons : Icon;
+const MenuButton = ({ text, image }) => {
   return (
     <TouchableOpacity style={styles.menuButton}>
-      
-        <Image source={logo} style={{ width: 100, height: 100, marginBottom: 10 }} />
-     
-      <Text style={styles.menuButtonText}>{text}</Text>
+      <Image
+        source={image} 
+        style={{ width: 80, height: 80, marginBottom: 12 }}
+      />
+      <Text
+        style={styles.menuButtonText}
+        numberOfLines={2}
+        ellipsizeMode="tail"
+      >
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 };
 
+
 const App = () => {
   return (
-    <SafeAreaView style={Estilo.safeArea}>
-      <View style={Estilo.container}>
-                
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="light-content" backgroundColor="#4A90E2" />
+      <View style={styles.container}>
         {/* Cabeçalho */}
-        <View style={Estilo.header}>
-         <View style={Estilo.headerTitleContainer}>
-            <Icon name="heartbeat" size={50} color="#FFD700" style={Estilo.headerIcon}/>
+        <View style={styles.header}>
+          <View style={styles.headerTitleContainer}>
+            <Icon name="heartbeat" size={30} color="#FFD700" style={styles.headerIcon}/>
             <View>
-              <Text style={Estilo.headerTextSmall}>O QUE SÃO</Text>
-              <Text style={Estilo.headerTextLarge}>Cuidados</Text>
-              <Text style={Estilo.headerTextLargeYellow}>Paliativos?</Text>
+              <Text style={styles.headerTextSmall}>O QUE SÃO</Text>
+              <Text style={styles.headerTextLarge}>Cuidados</Text>
+              <Text style={styles.headerTextLargeYellow}>Paliativos?</Text>
             </View>
           </View>
-          <View style={Estilo.LinhaBranca} />
+          <View style={styles.headerSeparator} />
         </View>
 
 
         <View style={styles.mainContent}>
           <View style={styles.menuRow}>
-            <MenuButton iconName="thermometer-half" text="DIÁRIO DE SINTOMAS" />
-            <MenuButton iconName="information-outline" iconLibrary="Material" text="INFORMAÇÕES SOBRE O TRATAMENTO" />
+            <MenuButton iconName="thermometer-half" text="DIÁRIO DE SINTOMAS" image = {sintomas} />
+            <MenuButton iconName="information-outline" iconLibrary="Material" text="INFORMAÇÕES SOBRE O TRATAMENTO" image = {informacoes}/>
           </View>
           <View style={styles.menuRow}>
-            <MenuButton iconName="clipboard-list" text="MEU PRONTUÁRIO" />
-            <MenuButton iconName="file-document-edit-outline" iconLibrary="Material" text="DOCUMENTOS CLÍNICOS" />
+            <MenuButton iconName="clipboard-list" text="MEU PRONTUÁRIO" image = {prontuario} />
+            <MenuButton iconName="file-document-edit-outline" iconLibrary="Material" text="DOCUMENTOS CLÍNICOS" image = {documento} />
           </View>
         </View>
 
 
-        {/* Barra de navegação inferior */}
-        <View style={Estilo.navBar}>
-          <TouchableOpacity style={[Estilo.navButton, Estilo.navButtonActive]}>
+        <View style={styles.navBar}>
+          <TouchableOpacity style={[styles.navButton, styles.navButtonActive]}>
             <Icon name="home" size={24} color="#4A90E2" /> 
-            <Text style={Estilo.navTextActive}>HOME</Text>
+            <Text style={styles.navTextActive}>HOME</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Estilo.navButton}>
+          <TouchableOpacity style={styles.navButton}>
             <Icon name="question-circle" size={28} color="#A0A0A0" />
           </TouchableOpacity>
-          <TouchableOpacity style={Estilo.navButton}>
+          <TouchableOpacity style={styles.navButton}>
             <Icon name="clinic-medical" size={28} color="#A0A0A0" />
           </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
-  )
+  );
 };
 
-const Estilo = StyleSheet.create({
+const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#4180AB',
@@ -85,36 +95,32 @@ const Estilo = StyleSheet.create({
     marginBottom: 20,
   },
   headerIcon: {
-    marginRight: 20
+    marginRight: 15,
   },
   headerTextSmall: {
     color: 'white',
     fontSize: 16,
     fontWeight: '300',
-    marginBottom: 5,
   },
   headerTextLarge: {
-    color: '#FFD700',
-    fontSize: 28,
-    fontWeight: 'bold',
-
-  },
-  headerTextLargeYellow: {
     color: 'white',
     fontSize: 28,
     fontWeight: 'bold',
-    marginTop: -5, 
- 
   },
-  LinhaBranca: {
+  headerTextLargeYellow: {
+    color: '#FFC107',
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginTop: -8, 
+  },
+  headerSeparator: {
     height: 4,
-    width: 'auto',
+    width: '100%',
     backgroundColor: 'white',
     borderRadius: 2,
   },
   mainContent: {
     flex: 1,
-    justifyContent: 'center', // Centraliza no meio da tela
     padding: 20,
   },
   menuRow: {
