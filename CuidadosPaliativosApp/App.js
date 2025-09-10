@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, View, Text, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, StatusBar, TouchableOpacity, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Image } from 'react-native';
@@ -122,11 +122,24 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     padding: 20,
+    ...Platform.select({
+      web: {
+        flexDirection: 'column',
+        alignItems: 'center',
+      },
+    }),
   },
   menuRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20,
+    width: '100%',
+    ...Platform.select({
+      web: {
+        maxWidth: 600, 
+        marginBottom: 40,
+      },
+    }),
   },
   menuButton: {
     width: '45%',
@@ -141,6 +154,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    ...Platform.select({
+      web: {
+        width: 150,
+        marginHorizontal: 10,
+      },
+    }),
   },
   iconContainer: {
     flex: 1,
@@ -153,7 +172,11 @@ const styles = StyleSheet.create({
     color: '#555',
     textAlign: 'center',
     marginTop: 5,
-
+    ...Platform.select({
+      web: {
+        fontSize: 14, 
+      },
+    }),
   },
   navBar: {
     flexDirection: 'row',
