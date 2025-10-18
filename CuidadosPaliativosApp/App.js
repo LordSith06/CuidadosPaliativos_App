@@ -1,9 +1,13 @@
 // App.js
 import React from 'react';
-import HomeScreen from './src/pages/HomeScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import StackRoutes from './src/navigation/StackRoutes';
 
-const App = () => {
-  return <HomeScreen />;
-};
-
-export default App;
+// Este arquivo inicializa a navegação do app.
+export default function App() {
+  return (
+    <NavigationContainer>
+      <StackRoutes />
+    </NavigationContainer>
+  );
+}
