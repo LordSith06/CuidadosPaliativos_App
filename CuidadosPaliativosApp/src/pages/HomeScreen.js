@@ -2,17 +2,22 @@ import React from 'react';
 import { SafeAreaView, View, Text, StatusBar, StyleSheet, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MenuButton from '../components/MenuButton';
+
+// Import das imagens
 import prontuario from '../assets/img/prontuario.jpg';
 import documento from '../assets/img/documento.jpg';
 import sintomas from '../assets/img/sintomas.jpg';
 import informacoes from '../assets/img/informações.jpg';
 
+// Tela principal do app (Home)
 const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
+      {/*Define cor da barra de status*/}
       <StatusBar barStyle="light-content" backgroundColor="#4A90E2" />
+
       <View style={styles.container}>
-        {/* Cabeçalho */}
+          {/*Cabeçalho*/}
         <View style={styles.header}>
           <View style={styles.headerTitleContainer}>
             <Icon name="heartbeat" size={30} color="#FFD700" style={styles.headerIcon}/>
@@ -25,34 +30,24 @@ const HomeScreen = () => {
           <View style={styles.headerSeparator} />
         </View>
 
+        {/*Conteúdo principal*/}
         <View style={styles.mainContent}>
           <View style={styles.menuRow}>
-            <MenuButton text="DIÁRIO DE SINTOMAS" image={sintomas} />
-            <MenuButton text="INFORMAÇÕES SOBRE O TRATAMENTO" image={informacoes} />
+            <MenuButton text="DIÁRIO DE SINTOMAS" image={sintomas} screen="Sintomas" />
+            <MenuButton text="INFORMAÇÕES SOBRE O TRATAMENTO" image={informacoes} screen="Tratamento" />
           </View>
           <View style={styles.menuRow}>
-            <MenuButton text="MEU PRONTUÁRIO" image={prontuario} />
-            <MenuButton text="DOCUMENTOS CLÍNICOS" image={documento} />
+            <MenuButton text="MEU PRONTUÁRIO" image={prontuario} screen="Prontuario" />
+            <MenuButton text="DOCUMENTOS CLÍNICOS" image={documento} screen="Documentos" />
           </View>
         </View>
 
-        <View style={styles.navBar}>
-          <View style={[styles.navButton, styles.navButtonActive]}>
-            <Icon name="home" size={24} color="#4A90E2" />
-            <Text style={styles.navTextActive}>HOME</Text>
-          </View>
-          <View style={styles.navButton}>
-            <Icon name="question-circle" size={28} color="#A0A0A0" />
-          </View>
-          <View style={styles.navButton}>
-            <Icon name="clinic-medical" size={28} color="#A0A0A0" />
-          </View>
-        </View>
       </View>
     </SafeAreaView>
   );
 };
 
+// Estilos da tela
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -117,32 +112,6 @@ const styles = StyleSheet.create({
         marginBottom: 40,
       },
     }),
-  },
-  navBar: {
-    flexDirection: 'row',
-    height: 70,
-    backgroundColor: '#F0F0F0',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    elevation: 10,
-  },
-  navButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  navButtonActive: {
-    backgroundColor: '#D6EAF8',
-    borderRadius: 15,
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-  },
-  navTextActive: {
-    fontSize: 12,
-    color: '#4A90E2',
-    fontWeight: 'bold',
   },
 });
 

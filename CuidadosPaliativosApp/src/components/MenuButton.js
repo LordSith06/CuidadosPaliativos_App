@@ -1,9 +1,16 @@
 import React from 'react';
 import { TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const MenuButton = ({ text, image }) => {
+//Componente de botão usado no menu principal
+const MenuButton = ({ text, image, screen }) => {
+  const navigation = useNavigation();
+
   return (
-    <TouchableOpacity style={styles.menuButton}>
+    <TouchableOpacity
+      style={styles.menuButton}
+      onPress={() => navigation.navigate(screen)} 
+    >
       <Image
         source={image}
         style={{ width: 80, height: 80, marginBottom: 12 }}
@@ -22,7 +29,7 @@ const MenuButton = ({ text, image }) => {
 const styles = StyleSheet.create({
   menuButton: {
     width: '45%',
-    aspectRatio: 1, 
+    aspectRatio: 1,
     backgroundColor: 'white',
     borderRadius: 15,
     justifyContent: 'center',

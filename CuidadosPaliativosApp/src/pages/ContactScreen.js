@@ -26,8 +26,8 @@ export default function ContactScreen() {
         </TouchableOpacity>
 
         <Text style={styles.label}>🌐 Site:</Text>
-        <TouchableOpacity onPress={() => Linking.openURL('https://www.cuidadospaliativos.com')}>
-          <Text style={[styles.text, styles.link]}>www.cuidadospaliativos.com</Text>
+        <TouchableOpacity onPress={() => Linking.openURL('')}>
+          <Text style={[styles.text, styles.link]}>www.cuidadospaliativosficticio.com</Text>
         </TouchableOpacity>
 
         <Text style={styles.footer}>
