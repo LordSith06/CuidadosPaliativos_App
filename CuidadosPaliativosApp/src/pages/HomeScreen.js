@@ -51,11 +51,11 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#4180AB',
+    backgroundColor: '#37758a',
   },
   container: {
     flex: 1,
-    backgroundColor: '#4180AB',
+    backgroundColor: '#37758a',
   },
   header: {
     padding: 20,
