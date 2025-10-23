@@ -9,34 +9,34 @@ import {
   Image 
 } from 'react-native';
 
-// Tela de Login 
+
 export default function LoginScreen({ navigation }) {
 
   // Hooks para controlar os campos de texto
   const [cpf, setCpf] = useState('');
   const [senha, setSenha] = useState('');
 
-  // Função de login (simples, apenas para navegar para as abas principais)
+
   const handleLogin = () => {
     // Aqui futuramente vai ser adicionada a validação real
     navigation.replace('MainTabs');
   };
 
   return (
-    <View style={styles.container}>
+    <View style={Estilo.container}>
       {/* Logo */}
       <Image 
         source={require('../assets/img/logo.jpg')} 
-        style={styles.logo}
+        style={Estilo.logo}
       />
 
       {/* Título */}
-      <Text style={styles.title}>Cuidados</Text>
-      <Text style={styles.subtitle}>Paliativos</Text>
+      <Text style={Estilo.title}>Cuidados</Text>
+      <Text style={Estilo.subtitle}>Paliativos</Text>
 
       {/* Campo CPF */}
       <TextInput
-        style={styles.input}
+        style={Estilo.input}
         placeholder="CPF"
         placeholderTextColor="#d9e3e8"
         value={cpf}
@@ -45,7 +45,7 @@ export default function LoginScreen({ navigation }) {
 
       {/* Campo Senha */}
       <TextInput
-        style={styles.input}
+        style={Estilo.input}
         placeholder="Senha"
         placeholderTextColor="#d9e3e8"
         secureTextEntry
@@ -55,27 +55,27 @@ export default function LoginScreen({ navigation }) {
 
       {/* Link esqueci senha */}
       <TouchableOpacity>
-        <Text style={styles.link}>Esqueceu sua senha?</Text>
+        <Text style={Estilo.link}>Esqueceu sua senha?</Text>
       </TouchableOpacity>
 
       {/* Botão Login */}
-      <TouchableOpacity style={styles.btnLogin} onPress={handleLogin}>
-        <Text style={styles.txtLogin}>Login</Text>
+      <TouchableOpacity style={Estilo.btnLogin} onPress={handleLogin}>
+        <Text style={Estilo.txtLogin}>Login</Text>
       </TouchableOpacity>
 
       {/* Separador */}
-      <Text style={styles.ou}>ou</Text>
+      <Text style={Estilo.ou}>ou</Text>
 
       {/* Botão Criar Conta */}
-      <TouchableOpacity style={styles.btnCriar}>
-        <Text style={styles.txtCriar}>Crie uma conta</Text>
+      <TouchableOpacity style={Estilo.btnCriar}>
+        <Text style={Estilo.txtCriar}>Crie uma conta</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 // Estilos da tela
-const styles = StyleSheet.create({
+const Estilo = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#37758a',

@@ -9,7 +9,7 @@ import {
   ScrollView 
 } from 'react-native';
 
-// Tela: Diário de Sintomas
+
 export default function SintomasScreen() {
   const [sintoma, setSintoma] = useState('');
   const [lista, setLista] = useState([]);
@@ -21,38 +21,38 @@ export default function SintomasScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={Estilo.container}>
       {/* Cabeçalho */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Diário de Sintomas</Text>
+      <View style={Estilo.header}>
+        <Text style={Estilo.headerText}>Diário de Sintomas</Text>
       </View>
 
       {/* Conteúdo */}
-      <ScrollView style={styles.content}>
-        <Text style={styles.label}>Descreva seu sintoma:</Text>
+      <ScrollView style={Estilo.content}>
+        <Text style={Estilo.label}>Descreva seu sintoma:</Text>
         <TextInput
-          style={styles.input}
+          style={Estilo.input}
           placeholder="Ex: Dor de cabeça, enjoo..."
           placeholderTextColor="#d9e3e8"
           value={sintoma}
           onChangeText={setSintoma}
         />
 
-        <TouchableOpacity style={styles.btnAdd} onPress={adicionarSintoma}>
-          <Text style={styles.btnText}>Adicionar</Text>
+        <TouchableOpacity style={Estilo.btnAdd} onPress={adicionarSintoma}>
+          <Text style={Estilo.btnText}>Adicionar</Text>
         </TouchableOpacity>
 
-        <Text style={styles.labelLista}>Sintomas registrados:</Text>
+        <Text style={Estilo.labelLista}>Sintomas registrados:</Text>
 
         {lista.length === 0 ? (
-          <Text style={styles.emptyText}>Nenhum sintoma registrado ainda.</Text>
+          <Text style={Estilo.emptyText}>Nenhum sintoma registrado ainda.</Text>
         ) : (
           <FlatList
             data={lista}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
-              <View style={styles.item}>
-                <Text style={styles.itemText}>• {item}</Text>
+              <View style={Estilo.item}>
+                <Text style={Estilo.itemText}>• {item}</Text>
               </View>
             )}
           />
@@ -62,8 +62,8 @@ export default function SintomasScreen() {
   );
 }
 
-// Estilos
-const styles = StyleSheet.create({
+
+const Estilo = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',

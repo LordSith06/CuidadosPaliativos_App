@@ -2,35 +2,35 @@
 import React from 'react';
 import { View, Text, StyleSheet, Linking, TouchableOpacity } from 'react-native';
 
-// Tela de Contato / Suporte
+
 export default function ContactScreen() {
   return (
-    <View style={styles.container}>
+    <View style={Estilo.container}>
       {/* Cabeçalho */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Contato</Text>
+      <View style={Estilo.header}>
+        <Text style={Estilo.headerText}>Contato</Text>
       </View>
 
       {/* Corpo */}
-      <View style={styles.body}>
-        <Text style={styles.info}>
+      <View style={Estilo.body}>
+        <Text style={Estilo.info}>
           Se você precisa de ajuda ou deseja mais informações sobre cuidados paliativos, entre em contato conosco:
         </Text>
 
-        <Text style={styles.label}>📞 Telefone:</Text>
-        <Text style={styles.text}> (11) 4002-8922 </Text>
+        <Text style={Estilo.label}>📞 Telefone:</Text>
+        <Text style={Estilo.text}> (11) 4002-8922 </Text>
 
-        <Text style={styles.label}>📧 E-mail:</Text>
+        <Text style={Estilo.label}>📧 E-mail:</Text>
         <TouchableOpacity onPress={() => Linking.openURL('mailto:contato@cuidadospaliativos.com')}>
-          <Text style={[styles.text, styles.link]}>contato@cuidadospaliativos.com</Text>
+          <Text style={[Estilo.text, Estilo.link]}>contato@cuidadospaliativos.com</Text>
         </TouchableOpacity>
 
-        <Text style={styles.label}>🌐 Site:</Text>
+        <Text style={Estilo.label}>🌐 Site:</Text>
         <TouchableOpacity onPress={() => Linking.openURL('')}>
-          <Text style={[styles.text, styles.link]}>www.cuidadospaliativosficticio.com</Text>
+          <Text style={[Estilo.text, Estilo.link]}>www.cuidadospaliativosficticio.com</Text>
         </TouchableOpacity>
 
-        <Text style={styles.footer}>
+        <Text style={Estilo.footer}>
           Estamos aqui para apoiar você e sua família. 💙
         </Text>
       </View>
@@ -38,8 +38,8 @@ export default function ContactScreen() {
   );
 }
 
-// Estilos da tela
-const styles = StyleSheet.create({
+
+const Estilo = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',

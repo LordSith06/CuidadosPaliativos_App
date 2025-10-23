@@ -8,7 +8,6 @@ import TratamentoScreen from '../pages/TratamentoScreen';
 import ProntuarioScreen from '../pages/ProntuarioScreen';
 import DocumentosScreen from '../pages/DocumentosScreen';
 
-// Criando a pilha de navegação
 const Stack = createNativeStackNavigator();
 
 export default function StackRoutes() {

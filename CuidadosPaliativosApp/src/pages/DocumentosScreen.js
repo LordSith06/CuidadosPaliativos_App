@@ -3,7 +3,6 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-// Tela: Documentos Clínicos
 export default function DocumentosScreen() {
   // Função simulada para "baixar" documento
   const abrirDocumento = (nome) => {
@@ -11,52 +10,52 @@ export default function DocumentosScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={Estilo.container}>
       {/* Cabeçalho */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Documentos Clínicos</Text>
+      <View style={Estilo.header}>
+        <Text style={Estilo.headerText}>Documentos Clínicos</Text>
       </View>
 
       {/* Conteúdo */}
-      <ScrollView style={styles.content}>
-        <Text style={styles.info}>
+      <ScrollView style={Estilo.content}>
+        <Text style={Estilo.info}>
           Aqui você pode visualizar e baixar documentos clínicos importantes, como exames e laudos médicos.
         </Text>
 
         {/* Lista de documentos */}
         <TouchableOpacity 
-          style={styles.card}
+          style={Estilo.card}
           onPress={() => abrirDocumento('Laudo Médico - 10/10/2024.pdf')}
         >
           <Icon name="file-text" size={24} color="#2b6b87" />
-          <Text style={styles.cardText}>Laudo Médico - 10/10/2024.pdf</Text>
+          <Text style={Estilo.cardText}>Laudo Médico - 10/10/2024.pdf</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
-          style={styles.card}
+          style={Estilo.card}
           onPress={() => abrirDocumento('Exame de Sangue - 25/09/2024.pdf')}
         >
           <Icon name="file-text" size={24} color="#2b6b87" />
-          <Text style={styles.cardText}>Exame de Sangue - 25/09/2024.pdf</Text>
+          <Text style={Estilo.cardText}>Exame de Sangue - 25/09/2024.pdf</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
-          style={styles.card}
+          style={Estilo.card}
           onPress={() => abrirDocumento('Receita Médica - 20/09/2024.pdf')}
         >
           <Icon name="file-text" size={24} color="#2b6b87" />
-          <Text style={styles.cardText}>Receita Médica - 20/09/2024.pdf</Text>
+          <Text style={Estilo.cardText}>Receita Médica - 20/09/2024.pdf</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
-          style={styles.card}
+          style={Estilo.card}
           onPress={() => abrirDocumento('Relatório de Enfermagem - 05/09/2024.pdf')}
         >
           <Icon name="file-text" size={24} color="#2b6b87" />
-          <Text style={styles.cardText}>Relatório de Enfermagem - 05/09/2024.pdf</Text>
+          <Text style={Estilo.cardText}>Relatório de Enfermagem - 05/09/2024.pdf</Text>
         </TouchableOpacity>
 
-        <Text style={styles.footer}>
+        <Text style={Estilo.footer}>
           Para acessar os arquivos reais, entre em contato com a equipe responsável.
         </Text>
       </ScrollView>
@@ -64,8 +63,8 @@ export default function DocumentosScreen() {
   );
 }
 
-// Estilos da tela
-const styles = StyleSheet.create({
+
+const Estilo = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',

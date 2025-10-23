@@ -8,7 +8,7 @@ const MenuButton = ({ text, image, screen }) => {
 
   return (
     <TouchableOpacity
-      style={styles.menuButton}
+      style={Estilo.menuButton}
       onPress={() => navigation.navigate(screen)} 
     >
       <Image
@@ -16,7 +16,7 @@ const MenuButton = ({ text, image, screen }) => {
         style={{ width: 80, height: 80, marginBottom: 12 }}
       />
       <Text
-        style={styles.menuButtonText}
+        style={Estilo.menuButtonText}
         numberOfLines={2}
         ellipsizeMode="tail"
       >
@@ -26,7 +26,7 @@ const MenuButton = ({ text, image, screen }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const Estilo = StyleSheet.create({
   menuButton: {
     width: '45%',
     aspectRatio: 1,

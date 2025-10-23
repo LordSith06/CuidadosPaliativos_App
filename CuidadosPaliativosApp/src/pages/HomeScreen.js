@@ -9,34 +9,34 @@ import documento from '../assets/img/documento.jpg';
 import sintomas from '../assets/img/sintomas.jpg';
 import informacoes from '../assets/img/informações.jpg';
 
-// Tela principal do app (Home)
+
 const HomeScreen = () => {
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={Estilo.safeArea}>
       {/*Define cor da barra de status*/}
       <StatusBar barStyle="light-content" backgroundColor="#4A90E2" />
 
-      <View style={styles.container}>
+      <View style={Estilo.container}>
           {/*Cabeçalho*/}
-        <View style={styles.header}>
-          <View style={styles.headerTitleContainer}>
-            <Icon name="heartbeat" size={30} color="#FFD700" style={styles.headerIcon}/>
+        <View style={Estilo.header}>
+          <View style={Estilo.headerTitleContainer}>
+            <Icon name="heartbeat" size={30} color="#FFD700" style={Estilo.headerIcon}/>
             <View>
-              <Text style={styles.headerTextSmall}>O QUE SÃO</Text>
-              <Text style={styles.headerTextLarge}>Cuidados</Text>
-              <Text style={styles.headerTextLargeYellow}>Paliativos?</Text>
+              <Text style={Estilo.headerTextSmall}>O QUE SÃO</Text>
+              <Text style={Estilo.headerTextLarge}>Cuidados</Text>
+              <Text style={Estilo.headerTextLargeYellow}>Paliativos?</Text>
             </View>
           </View>
-          <View style={styles.headerSeparator} />
+          <View style={Estilo.headerSeparator} />
         </View>
 
         {/*Conteúdo principal*/}
-        <View style={styles.mainContent}>
-          <View style={styles.menuRow}>
+        <View style={Estilo.mainContent}>
+          <View style={Estilo.menuRow}>
             <MenuButton text="DIÁRIO DE SINTOMAS" image={sintomas} screen="Sintomas" />
             <MenuButton text="INFORMAÇÕES SOBRE O TRATAMENTO" image={informacoes} screen="Tratamento" />
           </View>
-          <View style={styles.menuRow}>
+          <View style={Estilo.menuRow}>
             <MenuButton text="MEU PRONTUÁRIO" image={prontuario} screen="Prontuario" />
             <MenuButton text="DOCUMENTOS CLÍNICOS" image={documento} screen="Documentos" />
           </View>
@@ -47,8 +47,8 @@ const HomeScreen = () => {
   );
 };
 
-// Estilos da tela
-const styles = StyleSheet.create({
+
+const Estilo = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#37758a',

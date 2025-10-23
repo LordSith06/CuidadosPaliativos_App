@@ -1,7 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-// Import das telas
 import HomeScreen from '../pages/HomeScreen';
 import SintomasScreen from '../pages/SintomasScreen';
 import TratamentoScreen from '../pages/TratamentoScreen';
@@ -18,7 +17,7 @@ export default function HomeStack() {
         name="HomeScreen"
         component={HomeScreen}
         options={{
-          headerShown: false, // sem barra de título na home
+          headerShown: false, 
         }}
       />
 
@@ -29,7 +28,7 @@ export default function HomeStack() {
         options={{
           headerTitle: '',
           headerStyle: { backgroundColor: '#37758a' },
-          headerTintColor: '#fff', // cor da seta
+          headerTintColor: '#fff', 
         }}
       />
 

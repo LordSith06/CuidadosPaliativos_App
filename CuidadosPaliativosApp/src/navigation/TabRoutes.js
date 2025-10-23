@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
 
-// Importa as telas principais
+
 import HomeStack from './HomeStack';
 import FaqScreen from '../pages/FaqScreen';
 import ContactScreen from '../pages/ContactScreen';
