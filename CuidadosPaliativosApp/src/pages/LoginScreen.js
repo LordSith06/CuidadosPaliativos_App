@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   View, 
@@ -9,13 +8,10 @@ import {
   Image 
 } from 'react-native';
 
-
 export default function LoginScreen({ navigation }) {
 
-  // Hooks para controlar os campos de texto
   const [cpf, setCpf] = useState('');
   const [senha, setSenha] = useState('');
-
 
   const handleLogin = () => {
     // Aqui futuramente vai ser adicionada a validação real
@@ -67,7 +63,10 @@ export default function LoginScreen({ navigation }) {
       <Text style={Estilo.ou}>ou</Text>
 
       {/* Botão Criar Conta */}
-      <TouchableOpacity style={Estilo.btnCriar}>
+      <TouchableOpacity 
+        style={Estilo.btnCriar} 
+        onPress={() => navigation.navigate('CriarConta')} // <- Aqui
+      >
         <Text style={Estilo.txtCriar}>Crie uma conta</Text>
       </TouchableOpacity>
     </View>

@@ -60,14 +60,14 @@ const Estilo = StyleSheet.create({
   },
   header: {
     backgroundColor: '#37758a',
-    paddingVertical: 20,
+    paddingVertical: 25,
     alignItems: 'center',
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
   },
   headerText: {
     color: '#ffffff',
-    fontSize: 22,
+    fontSize: 30,
     fontWeight: '700',
   },
   content: {
