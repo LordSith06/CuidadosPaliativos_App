@@ -39,10 +39,10 @@ export default function CriarContaScreen({ navigation }) {
       }
 
       const data = await res.json();
-      console.log("✅ Resposta do backend:", data);
+      console.log("Resposta do backend:", data);
       return true;
     } catch (error) {
-      console.error("❌ Erro ao criar paciente:", error);
+      console.error("Erro ao criar paciente:", error);
       return false;
     }
   };
