@@ -15,6 +15,7 @@ const BASE_URL = "http://localhost:3000/";
 export default function CriarContaScreen({ navigation }) {
   const [nome, setNome] = useState('');
   const [cpf, setCpf] = useState('');
+  const [dataNascimento, setDataNascimento] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [medicacao, setMedicacao] = useState('');
@@ -48,7 +49,7 @@ export default function CriarContaScreen({ navigation }) {
   };
 
   const handleCriarConta = async () => {
-    if (!nome || !cpf || !senha || !confirmarSenha || !medico || !medicacao || !diagnostico) {
+    if (!nome || !cpf || !dataNascimento || !senha || !confirmarSenha || !medico || !medicacao || !diagnostico) {
       setModalMessage("Preencha todos os campos!");
       setModalSuccess(false);
       setModalVisible(true);
@@ -83,6 +84,7 @@ export default function CriarContaScreen({ navigation }) {
       // Limpa campos
       setNome("");
       setCpf("");
+      setDataNascimento("");
       setSenha("");
       setConfirmarSenha("");
       setMedicacao("");
@@ -115,6 +117,7 @@ export default function CriarContaScreen({ navigation }) {
       {/* Campos */}
       <TextInput style={Estilo.input} placeholder="Nome" placeholderTextColor="#d9e3e8" value={nome} onChangeText={setNome} />
       <TextInput style={Estilo.input} placeholder="CPF" placeholderTextColor="#d9e3e8" value={cpf} onChangeText={setCpf} />
+      <TextInput style={Estilo.input} placeholder="Data de Nascimento" placeholderTextColor="#d9e3e8" value={dataNascimento} onChangeText={setDataNascimento} />
       <TextInput style={Estilo.input} placeholder="Senha" placeholderTextColor="#d9e3e8" secureTextEntry value={senha} onChangeText={setSenha} />
       <TextInput style={Estilo.input} placeholder="Confirmar Senha" placeholderTextColor="#d9e3e8" secureTextEntry value={confirmarSenha} onChangeText={setConfirmarSenha} />
       <TextInput style={Estilo.input} placeholder="Medicação" placeholderTextColor="#d9e3e8" value={medicacao} onChangeText={setMedicacao} />
