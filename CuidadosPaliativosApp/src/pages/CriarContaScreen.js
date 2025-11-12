@@ -6,7 +6,7 @@ import {
   TextInput, 
   TouchableOpacity, 
   ScrollView, 
-  Alert 
+  Modal
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -22,14 +22,16 @@ export default function CriarContaScreen({ navigation }) {
   const [diagnostico, setDiagnostico] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Função para enviar o POST ao backend
+  // Estado do modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalSuccess, setModalSuccess] = useState(false);
+
   const criarConta = async (paciente) => {
     try {
       const res = await fetch(`${BASE_URL}adicionarpaciente`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(paciente)
       });
 
@@ -38,8 +40,6 @@ export default function CriarContaScreen({ navigation }) {
         throw new Error(errText);
       }
 
-      const data = await res.json();
-      console.log("Resposta do backend:", data);
       return true;
     } catch (error) {
       console.error("Erro ao criar paciente:", error);
@@ -49,12 +49,16 @@ export default function CriarContaScreen({ navigation }) {
 
   const handleCriarConta = async () => {
     if (!nome || !cpf || !senha || !confirmarSenha || !medico || !medicacao || !diagnostico) {
-      Alert.alert("Atenção", "Preencha todos os campos!");
+      setModalMessage("Preencha todos os campos!");
+      setModalSuccess(false);
+      setModalVisible(true);
       return;
     }
 
     if (senha !== confirmarSenha) {
-      Alert.alert("Erro", "As senhas não coincidem!");
+      setModalMessage("As senhas não coincidem!");
+      setModalSuccess(false);
+      setModalVisible(true);
       return;
     }
 
@@ -72,7 +76,11 @@ export default function CriarContaScreen({ navigation }) {
     const sucesso = await criarConta(paciente);
 
     if (sucesso) {
-      Alert.alert("Sucesso", "Conta criada com sucesso!");
+      setModalMessage("Conta criada com sucesso!");
+      setModalSuccess(true);
+      setModalVisible(true);
+
+      // Limpa campos
       setNome("");
       setCpf("");
       setSenha("");
@@ -80,12 +88,18 @@ export default function CriarContaScreen({ navigation }) {
       setMedicacao("");
       setMedico("");
       setDiagnostico("");
-      navigation.goBack(); // volta para a tela anterior
     } else {
-      Alert.alert("Erro", "Erro ao criar conta, tente novamente!");
+      setModalMessage("Erro ao criar conta, tente novamente!");
+      setModalSuccess(false);
+      setModalVisible(true);
     }
 
     setLoading(false);
+  };
+
+  const fecharModal = () => {
+    setModalVisible(false);
+    if (modalSuccess) navigation.goBack();
   };
 
   return (
@@ -96,54 +110,15 @@ export default function CriarContaScreen({ navigation }) {
         <Text style={Estilo.txtVoltar}>Voltar</Text>
       </TouchableOpacity>
 
-      {/* Título */}
       <Text style={Estilo.title}>Criar Conta</Text>
 
       {/* Campos */}
-      <TextInput
-        style={Estilo.input}
-        placeholder="Nome"
-        placeholderTextColor="#d9e3e8"
-        value={nome}
-        onChangeText={setNome}
-      />
-      <TextInput
-        style={Estilo.input}
-        placeholder="CPF"
-        placeholderTextColor="#d9e3e8"
-        value={cpf}
-        onChangeText={setCpf}
-      />
-      <TextInput
-        style={Estilo.input}
-        placeholder="Senha"
-        placeholderTextColor="#d9e3e8"
-        secureTextEntry
-        value={senha}
-        onChangeText={setSenha}
-      />
-      <TextInput
-        style={Estilo.input}
-        placeholder="Confirmar Senha"
-        placeholderTextColor="#d9e3e8"
-        secureTextEntry
-        value={confirmarSenha}
-        onChangeText={setConfirmarSenha}
-      />
-      <TextInput
-        style={Estilo.input}
-        placeholder="Medicação"
-        placeholderTextColor="#d9e3e8"
-        value={medicacao}
-        onChangeText={setMedicacao}
-      />
-      <TextInput
-        style={Estilo.input}
-        placeholder="Médico Responsável"
-        placeholderTextColor="#d9e3e8"
-        value={medico}
-        onChangeText={setMedico}
-      />
+      <TextInput style={Estilo.input} placeholder="Nome" placeholderTextColor="#d9e3e8" value={nome} onChangeText={setNome} />
+      <TextInput style={Estilo.input} placeholder="CPF" placeholderTextColor="#d9e3e8" value={cpf} onChangeText={setCpf} />
+      <TextInput style={Estilo.input} placeholder="Senha" placeholderTextColor="#d9e3e8" secureTextEntry value={senha} onChangeText={setSenha} />
+      <TextInput style={Estilo.input} placeholder="Confirmar Senha" placeholderTextColor="#d9e3e8" secureTextEntry value={confirmarSenha} onChangeText={setConfirmarSenha} />
+      <TextInput style={Estilo.input} placeholder="Medicação" placeholderTextColor="#d9e3e8" value={medicacao} onChangeText={setMedicacao} />
+      <TextInput style={Estilo.input} placeholder="Médico Responsável" placeholderTextColor="#d9e3e8" value={medico} onChangeText={setMedico} />
       <TextInput
         style={[Estilo.input, { height: 100, textAlignVertical: 'top' }]}
         placeholder="Diagnóstico"
@@ -163,6 +138,28 @@ export default function CriarContaScreen({ navigation }) {
           {loading ? 'Enviando...' : 'Criar Conta'}
         </Text>
       </TouchableOpacity>
+
+      {/* Modal de Sucesso/Erro */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={fecharModal}
+      >
+        <View style={Estilo.modalOverlay}>
+          <View style={[Estilo.modalContent, modalSuccess ? Estilo.modalSuccess : Estilo.modalError]}>
+            <Icon 
+              name={modalSuccess ? "check-circle" : "error"} 
+              size={50} 
+              color={modalSuccess ? "#4CAF50" : "#f44336"} 
+            />
+            <Text style={Estilo.modalText}>{modalMessage}</Text>
+            <TouchableOpacity style={Estilo.modalButton} onPress={fecharModal}>
+              <Text style={Estilo.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -214,5 +211,40 @@ const Estilo = StyleSheet.create({
     color: '#2b6b87',
     fontSize: 16,
     fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '80%',
+    borderRadius: 20,
+    padding: 25,
+    alignItems: 'center',
+  },
+  modalSuccess: {
+    backgroundColor: '#e8f5e9',
+  },
+  modalError: {
+    backgroundColor: '#ffebee',
+  },
+  modalText: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginVertical: 15,
+    color: '#333',
+  },
+  modalButton: {
+    backgroundColor: '#2b6b87',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
   },
 });

@@ -5,17 +5,57 @@ import {
   StyleSheet, 
   TextInput, 
   TouchableOpacity, 
-  Image 
+  Image,
+  Modal
 } from 'react-native';
+
+const BASE_URL = "http://10.0.1.20:3000";
 
 export default function LoginScreen({ navigation }) {
 
   const [cpf, setCpf] = useState('');
   const [senha, setSenha] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalType, setModalType] = useState('success'); // success | error
 
-  const handleLogin = () => {
-    // Aqui futuramente vai ser adicionada a validação real
-    navigation.replace('MainTabs');
+  const showModal = (message, type = 'success') => {
+    setModalMessage(message);
+    setModalType(type);
+    setModalVisible(true);
+    setTimeout(() => setModalVisible(false), 2000);
+  };
+
+  const handleLogin = async () => {
+    if (!cpf || !senha) {
+      showModal("Preencha o CPF e a senha!", "error");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cpf, senha }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        showModal(data.message || "Usuário e/ou senha incorretos!", "error");
+        return;
+      }
+
+      console.log("Token recebido:", data.token);
+      showModal("Login realizado com sucesso!", "success");
+
+      // Espera o modal desaparecer antes de navegar
+      setTimeout(() => navigation.replace("MainTabs"), 2000);
+
+    } catch (error) {
+      console.error("Erro ao logar:", error);
+      showModal("Erro de conexão com o servidor!", "error");
+    }
   };
 
   return (
@@ -65,15 +105,30 @@ export default function LoginScreen({ navigation }) {
       {/* Botão Criar Conta */}
       <TouchableOpacity 
         style={Estilo.btnCriar} 
-        onPress={() => navigation.navigate('CriarConta')} // <- Aqui
+        onPress={() => navigation.navigate('CriarConta')}
       >
         <Text style={Estilo.txtCriar}>Crie uma conta</Text>
       </TouchableOpacity>
+
+      {/* Modal de feedback */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+      >
+        <View style={Estilo.modalOverlay}>
+          <View style={[
+            Estilo.modalContent, 
+            modalType === 'success' ? Estilo.modalSuccess : Estilo.modalError
+          ]}>
+            <Text style={Estilo.modalText}>{modalMessage}</Text>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
-// Estilos da tela
 const Estilo = StyleSheet.create({
   container: {
     flex: 1,
@@ -151,5 +206,30 @@ const Estilo = StyleSheet.create({
     color: '#2b6b87',
     fontSize: 16,
     fontWeight: '600',
+  },
+  // Modal
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  modalContent: {
+    padding: 25,
+    borderRadius: 20,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  modalSuccess: {
+    backgroundColor: '#2b6b87',
+  },
+  modalError: {
+    backgroundColor: '#e04e4e',
   },
 });
