@@ -15,12 +15,12 @@ const BASE_URL = "http://localhost:3000/";
 export default function CriarContaScreen({ navigation }) {
   const [nome, setNome] = useState('');
   const [cpf, setCpf] = useState('');
-  const [dataNascimento, setDataNascimento] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [medicacao, setMedicacao] = useState('');
   const [medico, setMedico] = useState('');
   const [diagnostico, setDiagnostico] = useState('');
+  const [dataNascimento, setDataNascimento] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Estado do modal
@@ -49,7 +49,7 @@ export default function CriarContaScreen({ navigation }) {
   };
 
   const handleCriarConta = async () => {
-    if (!nome || !cpf || !dataNascimento || !senha || !confirmarSenha || !medico || !medicacao || !diagnostico) {
+    if (!nome || !cpf || !senha || !confirmarSenha || !medico || !medicacao || !diagnostico || !dataNascimento) {
       setModalMessage("Preencha todos os campos!");
       setModalSuccess(false);
       setModalVisible(true);
@@ -71,7 +71,8 @@ export default function CriarContaScreen({ navigation }) {
       senha,
       medicacao,
       medico_responsavel: medico,
-      diagnostico
+      diagnostico,
+      dataNascimento
     };
 
     const sucesso = await criarConta(paciente);
@@ -84,12 +85,12 @@ export default function CriarContaScreen({ navigation }) {
       // Limpa campos
       setNome("");
       setCpf("");
-      setDataNascimento("");
       setSenha("");
       setConfirmarSenha("");
       setMedicacao("");
       setMedico("");
       setDiagnostico("");
+      setDataNascimento("");
     } else {
       setModalMessage("Erro ao criar conta, tente novamente!");
       setModalSuccess(false);
@@ -117,7 +118,6 @@ export default function CriarContaScreen({ navigation }) {
       {/* Campos */}
       <TextInput style={Estilo.input} placeholder="Nome" placeholderTextColor="#d9e3e8" value={nome} onChangeText={setNome} />
       <TextInput style={Estilo.input} placeholder="CPF" placeholderTextColor="#d9e3e8" value={cpf} onChangeText={setCpf} />
-      <TextInput style={Estilo.input} placeholder="Data de Nascimento" placeholderTextColor="#d9e3e8" value={dataNascimento} onChangeText={setDataNascimento} />
       <TextInput style={Estilo.input} placeholder="Senha" placeholderTextColor="#d9e3e8" secureTextEntry value={senha} onChangeText={setSenha} />
       <TextInput style={Estilo.input} placeholder="Confirmar Senha" placeholderTextColor="#d9e3e8" secureTextEntry value={confirmarSenha} onChangeText={setConfirmarSenha} />
       <TextInput style={Estilo.input} placeholder="Medicação" placeholderTextColor="#d9e3e8" value={medicacao} onChangeText={setMedicacao} />
@@ -130,6 +130,7 @@ export default function CriarContaScreen({ navigation }) {
         value={diagnostico}
         onChangeText={setDiagnostico}
       />
+      <TextInput style={Estilo.input} placeholder="Data de Nascimento" placeholderTextColor="#d9e3e8" value={dataNascimento} onChangeText={setDataNascimento} />
 
       {/* Botão Criar Conta */}
       <TouchableOpacity 

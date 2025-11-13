@@ -102,14 +102,14 @@ app.get('/pacientes',auth, async (req, res) => {
 //Adicionar Paciente
 app.post('/adicionarpaciente', async (req, res) => {
   try {
-    const { nome, cpf, dataNascimento, senha, medicacao, medico_responsavel, diagnostico } = req.body;
+    const { nome, cpf, senha, medicacao, medico_responsavel, diagnostico, dataNascimento } = req.body;
 
-    if (!nome || !cpf || !dataNascimento || !senha || !medico_responsavel || !medicacao || !diagnostico)
+    if (!nome || !cpf || !senha || !medico_responsavel || !medicacao || !diagnostico || !dataNascimento)
       return res.status(400).json({ error: true, message: 'Todos os campos são obrigatórios!' });
 
     const [result] = await pool.execute(
-      'INSERT INTO paciente (nome, cpf,  senha, medicacao, medico_responsavel, diagnostico) VALUES (?, ?, ?, ?, ?, ?)',
-      [nome, cpf, dataNascimento, senha, medicacao, medico_responsavel, diagnostico]
+      'INSERT INTO paciente (nome, cpf, senha, medicacao, medico_responsavel, diagnostico, dataNascimento) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [nome, cpf, senha, medicacao, medico_responsavel, diagnostico, dataNascimento]
     );
 
     if (result.affectedRows > 0)
@@ -142,14 +142,14 @@ app.get('/pacientes/:id',auth, async (req, res) => {
 app.put('/atualizarpaciente/:id',auth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { nome, cpf, dataNascimento, senha, medicacao, medico_responsavel, diagnostico } = req.body;
+    const { nome, cpf, senha, medicacao, medico_responsavel, diagnostico, dataNascimento } = req.body;
 
-    if (!nome || !cpf || !dataNascimento || !senha || !medicacao || !medico_responsavel || !diagnostico)
+    if (!nome || !cpf || !senha || !medicacao || !medico_responsavel || !diagnostico || !dataNascimento)
       return res.status(400).json({ error: true, message: 'Informe todos os campos' });
 
     const [result] = await pool.execute(
-      'UPDATE paciente SET nome = ?, cpf = ?, senha = ?, medicacao = ?, medico_responsavel = ?, diagnostico = ? WHERE id = ?',
-      [nome, cpf,dataNascimento, senha, medicacao, medico_responsavel, diagnostico, id]
+      'UPDATE paciente SET nome = ?, cpf = ?, senha = ?, medicacao = ?, medico_responsavel = ?, diagnostico = ?, dataNascimento = ? WHERE id = ?',
+      [nome, cpf, senha, medicacao, medico_responsavel, diagnostico, dataNascimento, id]
     );
 
     if (result.affectedRows === 0)
