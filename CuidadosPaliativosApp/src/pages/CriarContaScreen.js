@@ -9,6 +9,7 @@ import {
   Modal
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const BASE_URL = "http://localhost:3000/";
 
@@ -22,6 +23,21 @@ export default function CriarContaScreen({ navigation }) {
   const [diagnostico, setDiagnostico] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
   const [loading, setLoading] = useState(false);
+  const formatarData = (value) => {
+  value = value.replace(/\D/g, ""); // remove tudo que não é número
+
+  if (value.length > 2) {
+    value = value.replace(/^(\d{2})(\d)/, "$1/$2");
+   }
+    if (value.length > 5) {
+    value = value.replace(/^(\d{2})\/(\d{2})(\d)/, "$1/$2/$3");
+    }
+
+  return value.substring(0, 10); // DD/MM/AAAA no máximo
+  };
+
+
+  
 
   // Estado do modal
   const [modalVisible, setModalVisible] = useState(false);
@@ -130,7 +146,14 @@ export default function CriarContaScreen({ navigation }) {
         value={diagnostico}
         onChangeText={setDiagnostico}
       />
-      <TextInput style={Estilo.input} placeholder="Data de Nascimento" placeholderTextColor="#d9e3e8" value={dataNascimento} onChangeText={setDataNascimento} />
+      <TextInput /*Obriga o usuário a colocar somente números nesse campo*/
+      style={Estilo.input}
+      placeholder="Data de Nascimento"
+      placeholderTextColor="#d9e3e8"
+      keyboardType="numeric"
+      value={dataNascimento}
+      onChangeText={(text) => setDataNascimento(formatarData(text))}
+      />
 
       {/* Botão Criar Conta */}
       <TouchableOpacity 
