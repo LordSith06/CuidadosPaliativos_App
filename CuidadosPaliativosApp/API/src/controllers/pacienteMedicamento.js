@@ -20,7 +20,7 @@ app.get('/', async (req, res) => {
 
 
 //AUtENTICAÇÃO
-const JWT_SECRET = 'brunofera';
+const JWT_SECRET = 'segredo';
 
 
 //Criando um middleware para interceptar as rotas
