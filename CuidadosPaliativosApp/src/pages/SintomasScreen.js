@@ -32,12 +32,13 @@ export default function SintomasScreen() {
         <Text style={Estilo.label}>Descreva seu sintoma:</Text>
         <TextInput
           style={Estilo.input}
-          placeholder="Ex: Dor de cabeça, enjoo..."
+          placeholder="Ex: Dor de cabeça, enjoo, naûseas..."
           placeholderTextColor="#d9e3e8"
           value={sintoma}
           onChangeText={setSintoma}
         />
-
+        
+        {/*Adicionando sintonas*/}
         <TouchableOpacity style={Estilo.btnAdd} onPress={adicionarSintoma}>
           <Text style={Estilo.btnText}>Adicionar</Text>
         </TouchableOpacity>
