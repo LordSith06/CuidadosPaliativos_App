@@ -18,7 +18,6 @@ export default function CriarContaScreen({ navigation }) {
   const [cpf, setCpf] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
-  const [medicacao, setMedicacao] = useState('');
   const [medico, setMedico] = useState('');
   const [diagnostico, setDiagnostico] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
@@ -62,7 +61,7 @@ export default function CriarContaScreen({ navigation }) {
   };
 
   const handleCriarConta = async () => {
-    if (!nome || !cpf || !senha || !confirmarSenha || !medico || !medicacao || !diagnostico || !dataNascimento) {
+    if (!nome || !cpf || !senha || !confirmarSenha || !medico || !diagnostico || !dataNascimento) {
       setModalMessage("Preencha todos os campos!");
       setModalSuccess(false);
       setModalVisible(true);
@@ -82,7 +81,6 @@ export default function CriarContaScreen({ navigation }) {
       nome,
       cpf,
       senha,
-      medicacao,
       medico_responsavel: medico,
       diagnostico,
       dataNascimento
@@ -100,7 +98,6 @@ export default function CriarContaScreen({ navigation }) {
       setCpf("");
       setSenha("");
       setConfirmarSenha("");
-      setMedicacao("");
       setMedico("");
       setDiagnostico("");
       setDataNascimento("");
@@ -133,7 +130,6 @@ export default function CriarContaScreen({ navigation }) {
       <TextInput style={Estilo.input} placeholder="CPF" placeholderTextColor="#d9e3e8" value={cpf} onChangeText={setCpf} />
       <TextInput style={Estilo.input} placeholder="Senha" placeholderTextColor="#d9e3e8" secureTextEntry value={senha} onChangeText={setSenha} />
       <TextInput style={Estilo.input} placeholder="Confirmar Senha" placeholderTextColor="#d9e3e8" secureTextEntry value={confirmarSenha} onChangeText={setConfirmarSenha} />
-      <TextInput style={Estilo.input} placeholder="Medicação" placeholderTextColor="#d9e3e8" value={medicacao} onChangeText={setMedicacao} />
       <TextInput style={Estilo.input} placeholder="Médico Responsável" placeholderTextColor="#d9e3e8" value={medico} onChangeText={setMedico} />
       <TextInput
         style={[Estilo.input, { height: 100, textAlignVertical: 'top' }]}
