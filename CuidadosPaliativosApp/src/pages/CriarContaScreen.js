@@ -36,9 +36,6 @@ export default function CriarContaScreen({ navigation }) {
   return value.substring(0, 10); // DD/MM/AAAA no máximo
   };
 
-
-  
-
   // Estado do modal
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
