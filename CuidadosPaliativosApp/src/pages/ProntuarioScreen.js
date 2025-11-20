@@ -74,7 +74,7 @@ const Estilo = StyleSheet.create({
     padding: 20,
   },
   sectionTitle: {
-    color: '#2b6b87',
+    color: '#37758a',
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 8,
@@ -87,7 +87,7 @@ const Estilo = StyleSheet.create({
     marginBottom: 15,
   },
   label: {
-    color: '#2b6b87',
+    color: '#37758a',
     fontWeight: '600',
     fontSize: 16,
     marginTop: 5,
@@ -104,7 +104,7 @@ const Estilo = StyleSheet.create({
   },
   footer: {
     textAlign: 'center',
-    color: '#2b6b87',
+    color: '#37758a',
     fontStyle: 'italic',
     marginTop: 15,
     fontSize: 15,
