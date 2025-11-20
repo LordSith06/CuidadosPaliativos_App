@@ -63,7 +63,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={Estilo.mainContent}>
           <View style={Estilo.menuRow}>
             <MenuButton text="DIÁRIO DE SINTOMAS" image={sintomas} screen="Sintomas" />
-            <MenuButton text="INFORMAÇÕES SOBRE O TRATAMENTO" image={informacoes} screen="Tratamento" />
+            <MenuButton text="ATENDIMENTOS" image={prontuario} screen="Atendimentos" />
           </View>
           <View style={Estilo.menuRow}>
             <MenuButton text="MEU PRONTUÁRIO" image={prontuario} screen="Prontuario" />
