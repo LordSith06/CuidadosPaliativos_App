@@ -34,7 +34,7 @@ export default function HomeStack() {
 
       {/* Informações sobre o Tratamento */}
       <Stack.Screen
-        name="Tratamento"
+        name="Atendimentos"
         component={TratamentoScreen}
         options={{
           headerTitle: '',

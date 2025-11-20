@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,69 +8,62 @@ import {
   TextInput,
   Modal
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default function TratamentoScreen() {
-  
-  const [atendimentos, setAtendimentos] = useState([]);
+
+  const [lista, setLista] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Campos do formulário
   const [data, setData] = useState('');
   const [medico, setMedico] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [pacienteId, setPacienteId] = useState('');
 
-  function abrirFormulario() {
+  function novoRegistro() {
     setData('');
     setMedico('');
     setDescricao('');
-    setPacienteId('');
     setModalVisible(true);
   }
 
-  function salvarAtendimento() {
-    const novo = {
-      id: atendimentos.length + 1,
+  function salvar() {
+    if (!data || !medico || !descricao) return;
+
+    const item = {
+      id: lista.length + 1,
       data,
       medico,
       descricao,
-      pacienteId
     };
 
-    setAtendimentos([...atendimentos, novo]);
+    setLista([...lista, item]);
     setModalVisible(false);
   }
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <Text style={styles.header}>Atendimentos</Text>
 
-      {/* Lista */}
+      <Text style={styles.titulo}>Atendimentos</Text>
+
       <FlatList
-        data={atendimentos}
+        data={lista}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.cardTitulo}>{item.medico}</Text>
-            <Text style={styles.cardTexto}>Data: {item.data}</Text>
-            <Text style={styles.cardTexto}>Descrição: {item.descricao}</Text>
-            <Text style={styles.cardTexto}>Paciente ID: {item.pacienteId}</Text>
+            <Text style={styles.label}>{item.medico}</Text>
+            <Text style={styles.texto}>Data: {item.data}</Text>
+            <Text style={styles.texto}>Descrição: {item.descricao}</Text>
           </View>
         )}
       />
 
-      {/* Botão flutuante */}
-      <TouchableOpacity style={styles.fab} onPress={abrirFormulario}>
-        <Icon name="plus" size={22} color="#fff" />
+      <TouchableOpacity style={styles.botao} onPress={novoRegistro}>
+        <Text style={styles.botaoTexto}>Novo</Text>
       </TouchableOpacity>
 
-      {/* Formulário Modal */}
-      <Modal visible={modalVisible} transparent animationType="slide">
+      <Modal visible={modalVisible} transparent animationType="fade">
         <View style={styles.modalFundo}>
-          <View style={styles.modalCard}>
-            <Text style={styles.modalTitulo}>Novo Atendimento</Text>
+          <View style={styles.modal}>
+            <Text style={styles.subtitulo}>Novo Tratamento</Text>
 
             <TextInput
               placeholder="Data"
@@ -94,23 +87,17 @@ export default function TratamentoScreen() {
               onChangeText={setDescricao}
             />
 
-            <TextInput
-              placeholder="Paciente ID"
-              style={styles.input}
-              value={pacienteId}
-              onChangeText={setPacienteId}
-            />
-
-            <TouchableOpacity style={styles.btnSalvar} onPress={salvarAtendimento}>
-              <Text style={styles.btnTexto}>Salvar</Text>
+            <TouchableOpacity style={styles.botaoSalvar} onPress={salvar}>
+              <Text style={styles.botaoTexto}>Salvar</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.btnCancelar}
+              style={styles.botaoCancelar}
               onPress={() => setModalVisible(false)}
             >
-              <Text style={styles.btnTexto}>Cancelar</Text>
+              <Text style={styles.botaoTexto}>Cancelar</Text>
             </TouchableOpacity>
+
           </View>
         </View>
       </Modal>
@@ -122,66 +109,64 @@ export default function TratamentoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F2F2F2",
+    backgroundColor: "#FFF",
     padding: 20
   },
 
-  header: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: "#333",
-    marginBottom: 20
+  titulo: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 15
   },
 
   card: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 12,
-    marginBottom: 15,
-    elevation: 3
+    backgroundColor: "#F4F4F4",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 10
   },
 
-  cardTitulo: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: "#333"
+  label: {
+    fontSize: 16,
+    fontWeight: "bold"
   },
 
-  cardTexto: {
+  texto: {
     fontSize: 14,
-    color: "#555",
-    marginTop: 4
+    marginTop: 3,
+    color: "#444"
   },
 
-  fab: {
-    backgroundColor: "#0066FF",
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    position: "absolute",
-    right: 20,
-    bottom: 20,
-    justifyContent: "center",
+  botao: {
+    backgroundColor: "#007AFF",
+    padding: 12,
+    borderRadius: 8,
     alignItems: "center",
-    elevation: 5
+    marginTop: 10
+  },
+
+  botaoTexto: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold"
   },
 
   modalFundo: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.3)",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
 
-  modalCard: {
-    backgroundColor: "#fff",
+  modal: {
+    backgroundColor: "#FFF",
     width: "85%",
     padding: 20,
-    borderRadius: 15
+    borderRadius: 10,
   },
 
-  modalTitulo: {
-    fontSize: 22,
+  subtitulo: {
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 15
   },
@@ -189,29 +174,23 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: "#EEE",
     padding: 10,
-    borderRadius: 8,
+    borderRadius: 6,
     marginBottom: 10
   },
 
-  btnSalvar: {
-    backgroundColor: "#0066FF",
+  botaoSalvar: {
+    backgroundColor: "#007AFF",
     padding: 12,
-    borderRadius: 10,
+    borderRadius: 6,
     alignItems: "center",
-    marginTop: 10
+    marginTop: 5
   },
 
-  btnCancelar: {
+  botaoCancelar: {
     backgroundColor: "#999",
     padding: 12,
-    borderRadius: 10,
+    borderRadius: 6,
     alignItems: "center",
-    marginTop: 10
-  },
-
-  btnTexto: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold"
+    marginTop: 8
   }
 });

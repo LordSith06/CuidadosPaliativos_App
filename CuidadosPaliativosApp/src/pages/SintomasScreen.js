@@ -10,42 +10,82 @@ import {
 export default function ProntuarioScreen() {
   const [selecionados, setSelecionados] = useState([]);
 
-  const sintomas = [
-    { nome: "Dor de cabeça", acao: "Tente descansar, beber água e, se necessário, use analgésico leve." },
-    { nome: "Náuseas", acao: "Evite alimentos pesados e mantenha-se hidratado. Procure ajuda se persistir." },
-    { nome: "Febre", acao: "Tome antitérmico e monitore. Se passar de 38.5°C, procure atendimento." },
-    { nome: "Tontura", acao: "Sente-se, respire fundo e evite movimentos bruscos." },
-    { nome: "Falta de ar", acao: "Procure atendimento médico imediatamente." },
-    { nome: "Cansaço extremo", acao: "Descanse e hidrate-se. Se persistir, consulte um médico." },
-    { nome: "Dor no peito", acao: "Procure um hospital imediatamente." },
-  ];
+  const dataAtual = new Date().toLocaleDateString("pt-BR");
+
+const sintomas = [
+  { nome: "Dor de cabeça", acao: "Tente descansar, beber água e, se necessário, use analgésico leve.", estavel: true },
+  { nome: "Náuseas", acao: "Evite alimentos pesados e mantenha-se hidratado. Procure ajuda se persistir.", estavel: true },
+  { nome: "Febre", acao: "Tome antitérmico e monitore. Se passar de 38.5°C, procure atendimento.", estavel: true },
+  { nome: "Tontura", acao: "Sente-se, respire fundo e evite movimentos bruscos.", estavel: true },
+  { nome: "Falta de ar", acao: "Procure atendimento médico imediatamente.", critico: true },
+  { nome: "Cansaço extremo", acao: "Descanse e hidrate-se. Se persistir, consulte um médico.", estavel: true },
+  { nome: "Dor no peito", acao: "Procure um hospital imediatamente.", critico: true },
+  { nome: "Nenhum sintoma", acao: "Tudo certo. Fico feliz em saber disso", positivo: true }
+  
+];
+
+  const selecionarSintoma = (sintoma) => {
+  // Se clicou em "Nenhum sintoma"
+  if (sintoma.nome === "Nenhum sintoma") {
+    setSelecionados(["Nenhum sintoma"]);
+    return;
+  }
+  
+
+  // Se "Nenhum sintoma" já está selecionado, ignore
+  if (selecionados.includes("Nenhum sintoma")) return;
+
+  // Caso seja sintoma normal → adiciona normalmente
+  setSelecionados(prev => [...prev, sintoma.nome]);
+};
 
   const alternarSelecao = (sintoma) => {
-    if (selecionados.includes(sintoma)) {
-      setSelecionados(selecionados.filter(item => item !== sintoma));
-    } else {
-      setSelecionados([...selecionados, sintoma]);
-    }
-  };
+  // Caso clique em "Nenhum sintoma"
+  if (sintoma === "Nenhum sintoma") {
+    setSelecionados(["Nenhum sintoma"]);
+    return;
+  }
+
+  // Se "Nenhum sintoma" já está selecionado, não permite outros
+  if (selecionados.includes("Nenhum sintoma")) {
+    return;
+  }
+
+  // Seleção normal
+  if (selecionados.includes(sintoma)) {
+    setSelecionados(selecionados.filter(item => item !== sintoma));
+  } else {
+    setSelecionados([...selecionados, sintoma]);
+  }
+};
+
 
   return (
     <View style={Estilo.container}>
 
       {/* Cabeçalho */}
       <View style={Estilo.header}>
-        <Text style={Estilo.headerText}>Prontuário Médico</Text>
+        <Text style={Estilo.headerText}>Sintomas Diários</Text>
       </View>
 
       {/* Conteúdo */}
       <ScrollView style={Estilo.content}>
-        <Text style={Estilo.labelLista}>Selecione seus sintomas:</Text>
+        <View style={Estilo.linhaTitulo}>
+            <Text style={Estilo.labelLista}>Selecione seus sintomas:</Text>
+            <Text style={Estilo.data}>Data: {dataAtual}</Text>
+        </View>
 
         {sintomas.map((s, index) => (
           <View key={index} style={Estilo.item}>
             <TouchableOpacity 
               style={Estilo.checkboxArea} 
               onPress={() => alternarSelecao(s.nome)}
-            >
+              disabled={
+              (selecionados.includes("Nenhum sintoma") && s.nome !== "Nenhum sintoma") ||
+            (s.nome === "Nenhum sintoma" && selecionados.length > 0 && !selecionados.includes("Nenhum sintoma"))
+  }
+>
+
               <View style={Estilo.checkbox}>
                 {selecionados.includes(s.nome) && <View style={Estilo.checkboxMarcado} />}
               </View>
@@ -54,8 +94,19 @@ export default function ProntuarioScreen() {
 
             {/* Mensagem de orientação */}
             {selecionados.includes(s.nome) && (
-              <Text style={Estilo.acaoText}>{s.acao}</Text>
-            )}
+              <Text 
+                  style={[
+                    Estilo.acaoText,
+                    s.critico && Estilo.acaoCritica,
+                    s.positivo && Estilo.acaoPositiva,
+                    s.estavel && Estilo.acaoEstavel,
+                  ]}
+                >
+                  {s.acao}
+                </Text>
+              )}
+
+            
           </View>
         ))}
 
@@ -127,6 +178,37 @@ const Estilo = StyleSheet.create({
     backgroundColor: '#ffffff',
     padding: 8,
     borderRadius: 8,
-    fontSize: 14,
+    fontSize: 18,
   },
+
+  linhaTitulo: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 10,
+},
+
+data: {
+  color: "#2b6b87",
+  fontSize: 16,
+  fontWeight: "600",
+},
+
+acaoCritica: {
+  color: "red",
+  fontWeight: "bold",
+},
+
+acaoPositiva: {
+  color: "green",
+  fontWeight: "bold",
+},
+
+acaoEstavel: {
+  color: "yellow",
+  fontWeight: "bold",
+},
+
+
 });
+

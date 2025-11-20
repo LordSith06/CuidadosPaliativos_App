@@ -9,7 +9,7 @@ import {
   Modal
 } from 'react-native';
 
-const BASE_URL = "http://10.0.1.20:3000";
+const BASE_URL = "http://192.168.1.22:3000";
 
 export default function LoginScreen({ navigation }) {
 

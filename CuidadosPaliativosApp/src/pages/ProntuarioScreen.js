@@ -8,7 +8,7 @@ export default function ProntuarioScreen() {
     <View style={Estilo.container}>
       {/* Cabeçalho */}
       <View style={Estilo.header}>
-        <Text style={Estilo.headerText}>Meu Prontuário</Text>
+        <Text style={Estilo.headerText}>Histórico Clínico</Text>
       </View>
 
       {/* Conteúdo */}

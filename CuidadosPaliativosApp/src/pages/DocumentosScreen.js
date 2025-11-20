@@ -13,7 +13,7 @@ export default function DocumentosScreen() {
     <View style={Estilo.container}>
       {/* Cabeçalho */}
       <View style={Estilo.header}>
-        <Text style={Estilo.headerText}>Documentos Clínicos</Text>
+        <Text style={Estilo.headerText}>Medicamentos</Text>
       </View>
 
       {/* Conteúdo */}
