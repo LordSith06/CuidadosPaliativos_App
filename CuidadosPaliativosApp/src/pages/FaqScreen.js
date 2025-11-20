@@ -12,42 +12,42 @@ export default function FaqScreen() {
       </View>
 
       {/* Conteúdo rolável */}
-      <ScrollView style={Estilo.content}>
-        <Text style={Estilo.question}>
-          1. O que são cuidados paliativos?
-        </Text>
-        <Text style={Estilo.answer}>
-          São cuidados voltados para melhorar a qualidade de vida de pessoas com doenças graves, aliviando o sofrimento físico, emocional e espiritual.
-        </Text>
+<ScrollView style={Estilo.content}>
+  <Text style={Estilo.question}>
+    1. O que são cuidados paliativos?
+  </Text>
+  <Text style={Estilo.answer}>
+    São práticas de cuidado que têm como objetivo promover qualidade de vida para pessoas com doenças graves, reduzindo sintomas e oferecendo suporte físico, emocional e espiritual.
+  </Text>
 
-        <Text style={Estilo.question}>
-          2. Quem pode receber cuidados paliativos?
-        </Text>
-        <Text style={Estilo.answer}>
-          Qualquer pessoa com doença que ameace a vida e cause sofrimento, independentemente da idade ou do estágio da doença.
-        </Text>
+  <Text style={Estilo.question}>
+    2. Quem pode receber cuidados paliativos?
+  </Text>
+  <Text style={Estilo.answer}>
+    Qualquer pessoa que conviva com uma doença séria e apresente sofrimento pode receber cuidados paliativos, independentemente da idade ou fase da doença.
+  </Text>
 
-        <Text style={Estilo.question}>
-          3. Os cuidados paliativos substituem outros tratamentos?
-        </Text>
-        <Text style={Estilo.answer}>
-          Não. Eles podem ser aplicados junto com o tratamento curativo, buscando sempre o bem-estar do paciente.
-        </Text>
+  <Text style={Estilo.question}>
+    3. Os cuidados paliativos substituem outros tratamentos?
+  </Text>
+  <Text style={Estilo.answer}>
+    Não. Eles podem ser integrados ao tratamento curativo, ajudando a melhorar o bem-estar durante todo o processo terapêutico.
+  </Text>
 
-        <Text style={Estilo.question}>
-          4. Onde posso receber cuidados paliativos?
-        </Text>
-        <Text style={Estilo.answer}>
-          Em hospitais, clínicas, unidades de saúde ou até mesmo em casa, conforme a disponibilidade do serviço.
-        </Text>
+  <Text style={Estilo.question}>
+    4. Onde posso receber cuidados paliativos?
+  </Text>
+  <Text style={Estilo.answer}>
+    Podem ser oferecidos em hospitais, clínicas, unidades de saúde ou até no próprio lar, dependendo dos serviços disponíveis na região.
+  </Text>
 
-        <Text style={Estilo.question}>
-          5. Há tratamento paliativo no SUS?
-        </Text>
-        <Text style={Estilo.answer}>
-          Sim. Muitos hospitais e unidades de saúde do SUS oferecem equipes de cuidados paliativos para pacientes e familiares.
-        </Text>
-      </ScrollView>
+  <Text style={Estilo.question}>
+    5. Há tratamento paliativo no SUS?
+  </Text>
+  <Text style={Estilo.answer}>
+    Sim. Diversas unidades e hospitais do SUS contam com equipes especializadas em cuidados paliativos para atender pacientes e seus familiares.
+  </Text>
+</ScrollView>
     </View>
   );
 }
