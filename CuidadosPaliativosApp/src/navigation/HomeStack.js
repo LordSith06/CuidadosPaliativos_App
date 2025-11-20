@@ -6,23 +6,36 @@ import SintomasScreen from '../pages/SintomasScreen';
 import TratamentoScreen from '../pages/TratamentoScreen';
 import ProntuarioScreen from '../pages/ProntuarioScreen';
 import DocumentosScreen from '../pages/DocumentosScreen';
-import AtendimentosScreen from '../pages/AtendimentosScreen'; // <-- ADICIONADO
 
 const Stack = createStackNavigator();
 
 export default function HomeStack() {
   return (
     <Stack.Navigator>
-
+      {/* Tela principal */}
       <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false, 
+        }}
       />
 
+      {/* Diário de Sintomas */}
       <Stack.Screen
         name="Sintomas"
         component={SintomasScreen}
+        options={{
+          headerTitle: '',
+          headerStyle: { backgroundColor: '#37758a' },
+          headerTintColor: '#fff', 
+        }}
+      />
+
+      {/* Informações sobre o Tratamento */}
+      <Stack.Screen
+        name="Tratamento"
+        component={TratamentoScreen}
         options={{
           headerTitle: '',
           headerStyle: { backgroundColor: '#37758a' },
@@ -30,6 +43,7 @@ export default function HomeStack() {
         }}
       />
 
+      {/* Meu Prontuário */}
       <Stack.Screen
         name="Prontuario"
         component={ProntuarioScreen}
@@ -40,17 +54,7 @@ export default function HomeStack() {
         }}
       />
 
-      {/* NOVA TELA DE ATENDIMENTOS */}
-      <Stack.Screen
-        name="Atendimentos"
-        component={AtendimentosScreen}
-        options={{
-          headerTitle: '',
-          headerStyle: { backgroundColor: '#37758a' },
-          headerTintColor: '#fff',
-        }}
-      />
-
+      {/* Documentos Clínicos */}
       <Stack.Screen
         name="Documentos"
         component={DocumentosScreen}

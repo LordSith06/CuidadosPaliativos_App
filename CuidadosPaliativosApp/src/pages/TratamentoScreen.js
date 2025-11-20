@@ -1,105 +1,217 @@
-
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  TextInput,
+  Modal
+} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default function TratamentoScreen() {
+  
+  const [atendimentos, setAtendimentos] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  // Campos do formulário
+  const [data, setData] = useState('');
+  const [medico, setMedico] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [pacienteId, setPacienteId] = useState('');
+
+  function abrirFormulario() {
+    setData('');
+    setMedico('');
+    setDescricao('');
+    setPacienteId('');
+    setModalVisible(true);
+  }
+
+  function salvarAtendimento() {
+    const novo = {
+      id: atendimentos.length + 1,
+      data,
+      medico,
+      descricao,
+      pacienteId
+    };
+
+    setAtendimentos([...atendimentos, novo]);
+    setModalVisible(false);
+  }
+
   return (
-    <View style={Estilo.container}>
-      {/* Cabeçalho */}
-      <View style={Estilo.header}>
-        <Text style={Estilo.headerText}>Informações sobre o Tratamento</Text>
-      </View>
+    <View style={styles.container}>
+      {/* Header */}
+      <Text style={styles.header}>Atendimentos</Text>
 
-      {/* Conteúdo com rolagem */}
-      <ScrollView style={Estilo.content}>
-        <Text style={Estilo.text}>
-          Os cuidados paliativos têm como objetivo oferecer qualidade de vida 
-          e conforto a pessoas que enfrentam doenças graves ou incuráveis.
-        </Text>
+      {/* Lista */}
+      <FlatList
+        data={atendimentos}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text style={styles.cardTitulo}>{item.medico}</Text>
+            <Text style={styles.cardTexto}>Data: {item.data}</Text>
+            <Text style={styles.cardTexto}>Descrição: {item.descricao}</Text>
+            <Text style={styles.cardTexto}>Paciente ID: {item.pacienteId}</Text>
+          </View>
+        )}
+      />
 
-        <Text style={Estilo.text}>
-          Eles não significam o fim do tratamento, mas sim um cuidado 
-          complementar que busca aliviar a dor e o sofrimento físico, emocional 
-          e espiritual, tanto do paciente quanto de sua família.
-        </Text>
+      {/* Botão flutuante */}
+      <TouchableOpacity style={styles.fab} onPress={abrirFormulario}>
+        <Icon name="plus" size={22} color="#fff" />
+      </TouchableOpacity>
 
-        <Text style={Estilo.subTitle}>📋 Principais Objetivos:</Text>
-        <Text style={Estilo.listItem}>• Controlar sintomas como dor, enjoo e ansiedade.</Text>
-        <Text style={Estilo.listItem}>• Oferecer suporte emocional e psicológico.</Text>
-        <Text style={Estilo.listItem}>• Melhorar o conforto e a dignidade do paciente.</Text>
-        <Text style={Estilo.listItem}>• Apoiar familiares e cuidadores durante o processo.</Text>
+      {/* Formulário Modal */}
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <View style={styles.modalFundo}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitulo}>Novo Atendimento</Text>
 
-        <Text style={Estilo.subTitle}>💊 Tipos de Tratamento:</Text>
-        <Text style={Estilo.text}>
-          O tratamento paliativo pode envolver o uso de medicamentos para 
-          aliviar sintomas, acompanhamento psicológico, fisioterapia, 
-          nutrição adequada e cuidados espirituais, conforme as necessidades 
-          de cada paciente.
-        </Text>
+            <TextInput
+              placeholder="Data"
+              style={styles.input}
+              value={data}
+              onChangeText={setData}
+            />
 
-        <Text style={Estilo.subTitle}>🩺 Equipe Multidisciplinar:</Text>
-        <Text style={Estilo.text}>
-          A equipe de cuidados paliativos pode incluir médicos, enfermeiros, 
-          psicólogos, fisioterapeutas, nutricionistas e assistentes sociais, 
-          todos trabalhando juntos para oferecer o melhor cuidado possível.
-        </Text>
+            <TextInput
+              placeholder="Médico"
+              style={styles.input}
+              value={medico}
+              onChangeText={setMedico}
+            />
 
-        <Text style={Estilo.footer}>
-          “Cuidar quando não é mais possível curar também é um ato de amor.”
-        </Text>
-      </ScrollView>
+            <TextInput
+              placeholder="Descrição"
+              style={[styles.input, { height: 70 }]}
+              multiline
+              value={descricao}
+              onChangeText={setDescricao}
+            />
+
+            <TextInput
+              placeholder="Paciente ID"
+              style={styles.input}
+              value={pacienteId}
+              onChangeText={setPacienteId}
+            />
+
+            <TouchableOpacity style={styles.btnSalvar} onPress={salvarAtendimento}>
+              <Text style={styles.btnTexto}>Salvar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.btnCancelar}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.btnTexto}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
 }
 
-const Estilo = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#F2F2F2",
+    padding: 20
   },
+
   header: {
-    backgroundColor: '#37758a',
-    paddingVertical: 20,
-    alignItems: 'center',
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: "#333",
+    marginBottom: 20
   },
-  headerText: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: '700',
-    textAlign: 'center',
-    paddingHorizontal: 10,
+
+  card: {
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 15,
+    elevation: 3
   },
-  content: {
-    padding: 20,
-  },
-  text: {
-    color: '#333333',
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 10,
-    textAlign: 'justify',
-  },
-  subTitle: {
-    color: '#2b6b87',
+
+  cardTitulo: {
     fontSize: 18,
-    fontWeight: '700',
-    marginTop: 15,
-    marginBottom: 5,
+    fontWeight: 'bold',
+    color: "#333"
   },
-  listItem: {
-    color: '#333333',
+
+  cardTexto: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: 4
+  },
+
+  fab: {
+    backgroundColor: "#0066FF",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    position: "absolute",
+    right: 20,
+    bottom: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5
+  },
+
+  modalFundo: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  modalCard: {
+    backgroundColor: "#fff",
+    width: "85%",
+    padding: 20,
+    borderRadius: 15
+  },
+
+  modalTitulo: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 15
+  },
+
+  input: {
+    backgroundColor: "#EEE",
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 10
+  },
+
+  btnSalvar: {
+    backgroundColor: "#0066FF",
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 10
+  },
+
+  btnCancelar: {
+    backgroundColor: "#999",
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 10
+  },
+
+  btnTexto: {
+    color: "#fff",
     fontSize: 16,
-    marginBottom: 5,
-    lineHeight: 22,
-  },
-  footer: {
-    textAlign: 'center',
-    color: '#2b6b87',
-    fontStyle: 'italic',
-    marginTop: 20,
-    fontSize: 16,
-  },
+    fontWeight: "bold"
+  }
 });
