@@ -1,68 +1,68 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
-  FlatList, 
-  ScrollView 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView
 } from 'react-native';
 
+export default function ProntuarioScreen() {
+  const [selecionados, setSelecionados] = useState([]);
 
-export default function SintomasScreen() {
-  const [sintoma, setSintoma] = useState('');
-  const [lista, setLista] = useState([]);
+  const sintomas = [
+    { nome: "Dor de cabeça", acao: "Tente descansar, beber água e, se necessário, use analgésico leve." },
+    { nome: "Náuseas", acao: "Evite alimentos pesados e mantenha-se hidratado. Procure ajuda se persistir." },
+    { nome: "Febre", acao: "Tome antitérmico e monitore. Se passar de 38.5°C, procure atendimento." },
+    { nome: "Tontura", acao: "Sente-se, respire fundo e evite movimentos bruscos." },
+    { nome: "Falta de ar", acao: "Procure atendimento médico imediatamente." },
+    { nome: "Cansaço extremo", acao: "Descanse e hidrate-se. Se persistir, consulte um médico." },
+    { nome: "Dor no peito", acao: "Procure um hospital imediatamente." },
+  ];
 
-  const adicionarSintoma = () => {
-    if (sintoma.trim() === '') return;
-    setLista([...lista, sintoma]);
-    setSintoma('');
+  const alternarSelecao = (sintoma) => {
+    if (selecionados.includes(sintoma)) {
+      setSelecionados(selecionados.filter(item => item !== sintoma));
+    } else {
+      setSelecionados([...selecionados, sintoma]);
+    }
   };
 
   return (
     <View style={Estilo.container}>
+
       {/* Cabeçalho */}
       <View style={Estilo.header}>
-        <Text style={Estilo.headerText}>Diário de Sintomas</Text>
+        <Text style={Estilo.headerText}>Prontuário Médico</Text>
       </View>
 
       {/* Conteúdo */}
       <ScrollView style={Estilo.content}>
-        <Text style={Estilo.label}>Descreva seu sintoma:</Text>
-        <TextInput
-          style={Estilo.input}
-          placeholder="Ex: Dor de cabeça, enjoo, naûseas..."
-          placeholderTextColor="#d9e3e8"
-          value={sintoma}
-          onChangeText={setSintoma}
-        />
-        
-        {/*Adicionando sintonas*/}
-        <TouchableOpacity style={Estilo.btnAdd} onPress={adicionarSintoma}>
-          <Text style={Estilo.btnText}>Adicionar</Text>
-        </TouchableOpacity>
+        <Text style={Estilo.labelLista}>Selecione seus sintomas:</Text>
 
-        <Text style={Estilo.labelLista}>Sintomas registrados:</Text>
-
-        {lista.length === 0 ? (
-          <Text style={Estilo.emptyText}>Nenhum sintoma registrado ainda.</Text>
-        ) : (
-          <FlatList
-            data={lista}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <View style={Estilo.item}>
-                <Text style={Estilo.itemText}>• {item}</Text>
+        {sintomas.map((s, index) => (
+          <View key={index} style={Estilo.item}>
+            <TouchableOpacity 
+              style={Estilo.checkboxArea} 
+              onPress={() => alternarSelecao(s.nome)}
+            >
+              <View style={Estilo.checkbox}>
+                {selecionados.includes(s.nome) && <View style={Estilo.checkboxMarcado} />}
               </View>
+              <Text style={Estilo.itemText}>{s.nome}</Text>
+            </TouchableOpacity>
+
+            {/* Mensagem de orientação */}
+            {selecionados.includes(s.nome) && (
+              <Text style={Estilo.acaoText}>{s.acao}</Text>
             )}
-          />
-        )}
+          </View>
+        ))}
+
       </ScrollView>
     </View>
   );
 }
-
 
 const Estilo = StyleSheet.create({
   container: {
@@ -85,32 +85,6 @@ const Estilo = StyleSheet.create({
   content: {
     padding: 20,
   },
-  label: {
-    color: '#2b6b87',
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  input: {
-    backgroundColor: '#2b6b87',
-    color: '#fff',
-    height: 45,
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    marginBottom: 10,
-  },
-  btnAdd: {
-    backgroundColor: '#FFD43B',
-    height: 45,
-    borderRadius: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  btnText: {
-    color: '#2b6b87',
-    fontSize: 16,
-    fontWeight: '700',
-  },
   labelLista: {
     color: '#2b6b87',
     fontSize: 17,
@@ -119,18 +93,40 @@ const Estilo = StyleSheet.create({
   },
   item: {
     backgroundColor: '#d9e3e8',
-    padding: 10,
+    padding: 12,
     borderRadius: 10,
-    marginBottom: 8,
+    marginBottom: 12,
   },
   itemText: {
     color: '#2b6b87',
     fontSize: 16,
+    marginLeft: 10,
   },
-  emptyText: {
-    color: '#999',
-    fontStyle: 'italic',
-    textAlign: 'center',
-    marginTop: 20,
+  checkboxArea: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 2,
+    borderColor: '#2b6b87',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxMarcado: {
+    width: 12,
+    height: 12,
+    backgroundColor: '#2b6b87',
+    borderRadius: 3,
+  },
+  acaoText: {
+    marginTop: 8,
+    color: '#2b6b87',
+    backgroundColor: '#ffffff',
+    padding: 8,
+    borderRadius: 8,
+    fontSize: 14,
   },
 });
