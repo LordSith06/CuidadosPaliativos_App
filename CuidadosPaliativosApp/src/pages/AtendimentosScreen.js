@@ -1,155 +1,217 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  View, Text, StyleSheet, FlatList, TouchableOpacity, Alert 
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  TextInput,
+  Modal
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const AtendimentosScreen = ({ navigation }) => {
+export default function AtendimentoScreen() {
+  
   const [atendimentos, setAtendimentos] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const carregarAtendimentos = async () => {
-    try {
-      const token = await AsyncStorage.getItem('token');
+  // Campos do formulário
+  const [data, setData] = useState('');
+  const [medico, setMedico] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [pacienteId, setPacienteId] = useState('');
 
-      const resposta = await fetch("http://10.0.1.20:3000/atendimentos", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+  function abrirFormulario() {
+    setData('');
+    setMedico('');
+    setDescricao('');
+    setPacienteId('');
+    setModalVisible(true);
+  }
 
-      const data = await resposta.json();
-      setAtendimentos(data);
-    } catch (err) {
-      console.log("Erro ao carregar atendimentos", err);
-    }
-  };
+  function salvarAtendimento() {
+    const novo = {
+      id: atendimentos.length + 1,
+      data,
+      medico,
+      descricao,
+      pacienteId
+    };
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', carregarAtendimentos);
-    return unsubscribe;
-  }, [navigation]);
-
-  const excluirAtendimento = (id) => {
-    Alert.alert(
-      "Excluir atendimento",
-      "Tem certeza que deseja excluir este atendimento?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: async () => {
-            const token = await AsyncStorage.getItem('token');
-            await fetch(`http://10.0.1.20:3000/deletaratendimento/${id}`, {
-              method: 'DELETE',
-              headers: { Authorization: `Bearer ${token}` }
-            });
-            carregarAtendimentos();
-          }
-        }
-      ]
-    );
-  };
+    setAtendimentos([...atendimentos, novo]);
+    setModalVisible(false);
+  }
 
   return (
-    <View style={s.container}>
-      
-      {/* Título */}
-      <Text style={s.titulo}>Meus Atendimentos</Text>
-
-      {/* Botão adicionar */}
-      <TouchableOpacity 
-        style={s.btnAdd} 
-        onPress={() => navigation.navigate('NovoAtendimento')}
-      >
-        <Icon name="plus" size={18} color="#FFD700" />
-        <Text style={s.btnAddText}>Adicionar Atendimento</Text>
-      </TouchableOpacity>
+    <View style={styles.container}>
+      {/* Header */}
+      <Text style={styles.header}>Atendimentos</Text>
 
       {/* Lista */}
       <FlatList
         data={atendimentos}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={s.card}>
-            <Text style={s.cardTitle}>📅 {item.data}</Text>
-            <Text style={s.cardText}>👨‍⚕️ Médico: {item.medico}</Text>
-            <Text style={s.cardText}>📝 {item.descricao}</Text>
-
-            <View style={s.cardButtons}>
-              <TouchableOpacity 
-                style={s.btnEditar}
-                onPress={() => navigation.navigate("EditarAtendimento", { atendimento: item })}
-              >
-                <Icon name="edit" size={16} color="white" />
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={s.btnExcluir}
-                onPress={() => excluirAtendimento(item.id)}
-              >
-                <Icon name="trash" size={16} color="white" />
-              </TouchableOpacity>
-            </View>
+          <View style={styles.card}>
+            <Text style={styles.cardTitulo}>{item.medico}</Text>
+            <Text style={styles.cardTexto}>Data: {item.data}</Text>
+            <Text style={styles.cardTexto}>Descrição: {item.descricao}</Text>
+            <Text style={styles.cardTexto}>Paciente ID: {item.pacienteId}</Text>
           </View>
         )}
       />
+
+      {/* Botão flutuante */}
+      <TouchableOpacity style={styles.fab} onPress={abrirFormulario}>
+        <Icon name="plus" size={22} color="#fff" />
+      </TouchableOpacity>
+
+      {/* Formulário Modal */}
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <View style={styles.modalFundo}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitulo}>Novo Atendimento</Text>
+
+            <TextInput
+              placeholder="Data"
+              style={styles.input}
+              value={data}
+              onChangeText={setData}
+            />
+
+            <TextInput
+              placeholder="Médico"
+              style={styles.input}
+              value={medico}
+              onChangeText={setMedico}
+            />
+
+            <TextInput
+              placeholder="Descrição"
+              style={[styles.input, { height: 70 }]}
+              multiline
+              value={descricao}
+              onChangeText={setDescricao}
+            />
+
+            <TextInput
+              placeholder="Paciente ID"
+              style={styles.input}
+              value={pacienteId}
+              onChangeText={setPacienteId}
+            />
+
+            <TouchableOpacity style={styles.btnSalvar} onPress={salvarAtendimento}>
+              <Text style={styles.btnTexto}>Salvar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.btnCancelar}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.btnTexto}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
-};
+}
 
-const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#37758a", padding: 20 },
-  titulo: { 
-    fontSize: 26, 
-    fontWeight: "bold", 
-    color: "white", 
-    marginBottom: 20, 
-    textAlign: "center" 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F2F2F2",
+    padding: 20
   },
 
-  btnAdd: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: "#37758a",
-    borderWidth: 2,
-    borderColor: "#FFD700",
-    padding: 12,
-    borderRadius: 25,
-    marginBottom: 25
-  },
-  btnAddText: {
-    color: "#FFD700",
-    fontSize: 16,
-    marginLeft: 8,
-    fontWeight: "bold"
+  header: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: "#333",
+    marginBottom: 20
   },
 
   card: {
     backgroundColor: "#fff",
     padding: 15,
-    borderRadius: 15,
+    borderRadius: 12,
+    marginBottom: 15,
+    elevation: 3
+  },
+
+  cardTitulo: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: "#333"
+  },
+
+  cardTexto: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: 4
+  },
+
+  fab: {
+    backgroundColor: "#0066FF",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    position: "absolute",
+    right: 20,
+    bottom: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5
+  },
+
+  modalFundo: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  modalCard: {
+    backgroundColor: "#fff",
+    width: "85%",
+    padding: 20,
+    borderRadius: 15
+  },
+
+  modalTitulo: {
+    fontSize: 22,
+    fontWeight: "bold",
     marginBottom: 15
   },
-  cardTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 5, color: "#37758a" },
-  cardText: { fontSize: 15, color: "#333" },
 
-  cardButtons: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+  input: {
+    backgroundColor: "#EEE",
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 10
+  },
+
+  btnSalvar: {
+    backgroundColor: "#0066FF",
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
     marginTop: 10
   },
-  btnEditar: {
-    backgroundColor: "#4CAF50",
-    padding: 8,
-    borderRadius: 8,
-    marginRight: 10
+
+  btnCancelar: {
+    backgroundColor: "#999",
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 10
   },
-  btnExcluir: {
-    backgroundColor: "#E53935",
-    padding: 8,
-    borderRadius: 8
+
+  btnTexto: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold"
   }
 });
-
-export default AtendimentosScreen;

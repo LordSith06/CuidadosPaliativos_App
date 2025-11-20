@@ -24,7 +24,7 @@ export default function StackRoutes() {
 
       {/* Telas acessadas a partir dos botões da Home */}
       <Stack.Screen name="Sintomas" component={SintomasScreen} />
-      <Stack.Screen name="Tratamento" component={TratamentoScreen} />
+      <Stack.Screen name="Atendimentos" component={AtendimentosScreen} />
       <Stack.Screen name="Prontuario" component={ProntuarioScreen} />
       <Stack.Screen name="Documentos" component={DocumentosScreen} />
     </Stack.Navigator>
