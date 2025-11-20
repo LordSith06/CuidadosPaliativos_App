@@ -9,7 +9,6 @@ import {
   Modal
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 const BASE_URL = "http://localhost:3000/";
 
@@ -22,8 +21,28 @@ export default function CriarContaScreen({ navigation }) {
   const [diagnostico, setDiagnostico] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
   const [loading, setLoading] = useState(false);
-  const formatarData = (value) => {
-  value = value.replace(/\D/g, ""); // remove tudo que não é número
+ 
+  const formatarCpf = (value) => { // Formata o CPF enquanto o usuário digita
+
+  value = value.replace(/\D/g, ""); 
+
+  if (value.length > 3) {
+    value = value.replace(/^(\d{3})(\d)/, "$1.$2");
+  }
+
+  if (value.length > 6) {
+    value = value.replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3");
+  }
+
+  if (value.length > 9) {
+    value = value.replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
+  }
+
+  return value.substring(0, 14);
+};
+
+  const formatarData = (value) => { // Formata a data enquanto o usuário digita
+  value = value.replace(/\D/g, ""); 
 
   if (value.length > 2) {
     value = value.replace(/^(\d{2})(\d)/, "$1/$2");
@@ -32,7 +51,7 @@ export default function CriarContaScreen({ navigation }) {
     value = value.replace(/^(\d{2})\/(\d{2})(\d)/, "$1/$2/$3");
     }
 
-  return value.substring(0, 10); // DD/MM/AAAA no máximo
+  return value.substring(0, 10); 
   };
 
   // Estado do modal
@@ -68,12 +87,20 @@ export default function CriarContaScreen({ navigation }) {
       return;
     }
 
-    if (senha !== confirmarSenha) {
-      setModalMessage("As senhas não coincidem!");
+    if (senha.length < 5) {
+      setModalMessage("A senha deve ter ao menos 5 caracteres!");
       setModalSuccess(false);
       setModalVisible(true);
       return;
     }
+
+    if (senha !== confirmarSenha) {
+    setModalMessage("As senhas não coincidem!");
+    setModalSuccess(false);
+    setModalVisible(true);
+    return;
+  }
+
 
     setLoading(true);
 
@@ -127,7 +154,7 @@ export default function CriarContaScreen({ navigation }) {
 
       {/* Campos */}
       <TextInput style={Estilo.input} placeholder="Nome" placeholderTextColor="#d9e3e8" value={nome} onChangeText={setNome} />
-      <TextInput style={Estilo.input} placeholder="CPF" placeholderTextColor="#d9e3e8" value={cpf} onChangeText={setCpf} />
+      <TextInput style={Estilo.input} placeholder="CPF" placeholderTextColor="#d9e3e8" value={cpf} onChangeText={(text) => setCpf(formatarCpf(text))}/>
       <TextInput style={Estilo.input} placeholder="Senha" placeholderTextColor="#d9e3e8" secureTextEntry value={senha} onChangeText={setSenha} />
       <TextInput style={Estilo.input} placeholder="Confirmar Senha" placeholderTextColor="#d9e3e8" secureTextEntry value={confirmarSenha} onChangeText={setConfirmarSenha} />
       <TextInput style={Estilo.input} placeholder="Médico Responsável" placeholderTextColor="#d9e3e8" value={medico} onChangeText={setMedico} />
