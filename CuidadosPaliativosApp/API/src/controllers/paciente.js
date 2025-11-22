@@ -283,6 +283,134 @@ app.delete('/atendimento/:id', auth, async (req, res) => {
   }
 });
 
+app.get('/medicamentos', auth, async (req, res) => {
+    try {
+      const [rows] = await pool.execute('SELECT * FROM medicamento;');
+      res.status(200).json({ error: false, medicamentos: rows });
+    } catch (error) {
+      console.error('Erro ao buscar medicamentos:', error);
+      res.status(500).json({ error: true, message: 'Erro ao buscar medicamentos' });
+    }
+  });
+
+
+  
+  // GET – listar medicamentos de um paciente
+  app.get('/pacientes/:id/medicamentos', auth, async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const [rows] = await pool.execute(
+        'SELECT * FROM medicamento WHERE pacienteId = ?',
+        [id]
+      );
+
+      res.status(200).json({ error: false, medicamentos: rows });
+    } catch (error) {
+      console.error('Erro ao buscar medicamentos do paciente:', error);
+      res.status(500).json({ error: true, message: 'Erro ao buscar medicamentos do paciente' });
+    }
+  });
+
+
+ 
+  // POST – adicionar medicamento ao paciente
+  app.post('/medicamentos', auth, async (req, res) => {
+    try {
+      const { nome, miligramagem, descricao, pacienteId } = req.body;
+
+      if (!nome || !miligramagem || !descricao || !pacienteId)
+        return res.status(400).json({ error: true, message: 'Todos os campos são obrigatórios!' });
+
+      const [result] = await pool.execute(
+        'INSERT INTO medicamento (nome, miligramagem, descricao, pacienteId) VALUES (?, ?, ?, ?)',
+        [nome, miligramagem, descricao, pacienteId]
+      );
+
+      res.status(201).json({
+        error: false,
+        message: 'Medicamento cadastrado com sucesso!'
+      });
+
+    } catch (error) {
+      console.error('Erro ao inserir medicamento:', error);
+      res.status(500).json({ error: true, message: 'Erro interno ao criar medicamento!' });
+    }
+  });
+
+
+ 
+  // GET – buscar medicamento por ID
+  app.get('/medicamentos/:id', auth, async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const [rows] = await pool.execute(
+        'SELECT * FROM medicamento WHERE id = ?',
+        [id]
+      );
+
+      if (rows.length === 0)
+        return res.status(404).json({ error: true, message: 'Medicamento não encontrado!' });
+
+      res.status(200).json({ error: false, medicamento: rows[0] });
+
+    } catch (error) {
+      console.error('Erro ao buscar medicamento:', error);
+      res.status(500).json({ error: true, message: 'Erro ao buscar medicamento!' });
+    }
+  });
+
+
+  // PUT – atualizar medicamento
+  app.put('/medicamentos/:id', auth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { nome, miligramagem, descricao, pacienteId } = req.body;
+
+      if (!nome || !miligramagem || !descricao || !pacienteId)
+        return res.status(400).json({ error: true, message: 'Todos os campos são obrigatórios!' });
+
+      const [result] = await pool.execute(
+        'UPDATE medicamento SET nome = ?, miligramagem = ?, descricao = ?, pacienteId = ? WHERE id = ?',
+        [nome, miligramagem, descricao, pacienteId, id]
+      );
+
+      if (result.affectedRows === 0)
+        return res.status(404).json({ error: true, message: 'Medicamento não encontrado!' });
+
+      res.status(200).json({
+        error: false,
+        message: 'Medicamento atualizado com sucesso!'
+      });
+
+    } catch (error) {
+      console.error('Erro ao atualizar medicamento:', error);
+      res.status(500).json({ error: true, message: 'Erro ao atualizar medicamento!' });
+    }
+  });
+
+  app.delete('/medicamentos/:id', auth, async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const [result] = await pool.execute(
+        'DELETE FROM medicamento WHERE id = ?',
+        [id]
+      );
+
+      if (result.affectedRows === 0)
+        return res.status(404).json({ error: true, message: 'Medicamento não encontrado!' });
+
+      res.status(200).json({ error: false, message: 'Medicamento removido com sucesso!' });
+
+    } catch (error) {
+      console.error('Erro ao remover medicamento:', error);
+      res.status(500).json({ error: true, message: 'Erro ao remover medicamento!' });
+    }
+  });
+
+
 
 
 const PORT = 3000;
