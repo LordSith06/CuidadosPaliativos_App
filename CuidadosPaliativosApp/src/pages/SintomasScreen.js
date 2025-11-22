@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,20 +9,30 @@ import {
 
 export default function ProntuarioScreen() {
   const [selecionados, setSelecionados] = useState([]);
+  const [alerta, setAlerta] = useState(false);
+   const dataAtual = new Date().toLocaleDateString("pt-BR");
 
-  const dataAtual = new Date().toLocaleDateString("pt-BR");
-
-const sintomas = [
-  { nome: "Dor de cabeça", acao: "Tente descansar, beber água e, se necessário, use analgésico leve.", estavel: true },
-  { nome: "Náuseas", acao: "Evite alimentos pesados e mantenha-se hidratado. Procure ajuda se persistir.", estavel: true },
-  { nome: "Febre", acao: "Tome antitérmico e monitore. Se passar de 38.5°C, procure atendimento.", estavel: true },
-  { nome: "Tontura", acao: "Sente-se, respire fundo e evite movimentos bruscos.", estavel: true },
-  { nome: "Falta de ar", acao: "Procure atendimento médico imediatamente.", critico: true },
-  { nome: "Cansaço extremo", acao: "Descanse e hidrate-se. Se persistir, consulte um médico.", estavel: true },
-  { nome: "Dor no peito", acao: "Procure um hospital imediatamente.", critico: true },
-  { nome: "Nenhum sintoma", acao: "Tudo certo. Fico feliz em saber disso", positivo: true }
+  useEffect(() => {
   
-];
+    if (selecionados.length > 2 && !selecionados.includes("Nenhum sintoma")) {
+    setAlerta(true);
+    } else {
+      setAlerta(false);
+    }
+
+  }, [selecionados]);
+
+  const sintomas = [
+    { nome: "Dor de cabeça", acao: "Tente descansar, beber água e, se necessário, use analgésico leve.", estavel: true },
+    { nome: "Náuseas", acao: "Evite alimentos pesados e mantenha-se hidratado. Procure ajuda se persistir.", estavel: true },
+    { nome: "Febre", acao: "Tome antitérmico e monitore. Se passar de 38.5°C, procure atendimento.", estavel: true },
+    { nome: "Tontura", acao: "Sente-se, respire fundo e evite movimentos bruscos.", estavel: true },
+    { nome: "Falta de ar", acao: "Procure atendimento médico imediatamente.", critico: true },
+    { nome: "Cansaço extremo", acao: "Descanse e hidrate-se. Se persistir, consulte um médico.", estavel: true },
+    { nome: "Dor no peito", acao: "Procure um hospital imediatamente.", critico: true },
+    { nome: "Nenhum sintoma", acao: "Tudo certo. Fico feliz em saber disso", positivo: true }
+  
+  ];
 
   const selecionarSintoma = (sintoma) => {
   // Se clicou em "Nenhum sintoma"
@@ -37,21 +47,30 @@ const sintomas = [
 
   // Caso seja sintoma normal → adiciona normalmente
   setSelecionados(prev => [...prev, sintoma.nome]);
-};
+  };
 
-  const alternarSelecao = (sintoma) => {
-  // Caso clique em "Nenhum sintoma"
+ const alternarSelecao = (sintoma) => {
+
+  // Se clicou em "Nenhum sintoma"
   if (sintoma === "Nenhum sintoma") {
+    // Se já está selecionado → desmarca
+    if (selecionados.includes("Nenhum sintoma")) {
+      setSelecionados([]);
+      return;
+    }
+
+    // Se NÃO está selecionado → seleciona apenas ele
     setSelecionados(["Nenhum sintoma"]);
     return;
   }
 
-  // Se "Nenhum sintoma" já está selecionado, não permite outros
+  // Se outro sintoma foi clicado e "Nenhum sintoma" está marcado → remove ele
   if (selecionados.includes("Nenhum sintoma")) {
+    setSelecionados([sintoma]);
     return;
   }
 
-  // Seleção normal
+  // Alternar sintomas normais
   if (selecionados.includes(sintoma)) {
     setSelecionados(selecionados.filter(item => item !== sintoma));
   } else {
@@ -59,8 +78,8 @@ const sintomas = [
   }
 };
 
-
   return (
+
     <View style={Estilo.container}>
 
       {/* Cabeçalho */}
@@ -69,48 +88,49 @@ const sintomas = [
       </View>
 
       {/* Conteúdo */}
-      <ScrollView style={Estilo.content}>
-        <View style={Estilo.linhaTitulo}>
-            <Text style={Estilo.labelLista}>Selecione seus sintomas:</Text>
-            <Text style={Estilo.data}>Data: {dataAtual}</Text>
+     <ScrollView style={Estilo.content}>
+
+  <View style={Estilo.linhaTitulo}>
+    <Text style={Estilo.labelLista}>Selecione seus sintomas:</Text>
+    <Text style={Estilo.data}>Data: {dataAtual}</Text>
+  </View>
+
+  {sintomas.map((s, index) => (
+    <View key={index} style={Estilo.item}>
+
+      <TouchableOpacity 
+        style={Estilo.checkboxArea}
+        onPress={() => alternarSelecao(s.nome)}
+      >
+        <View style={Estilo.checkbox}>
+          {selecionados.includes(s.nome) && <View style={Estilo.checkboxMarcado} />}
         </View>
 
-        {sintomas.map((s, index) => (
-          <View key={index} style={Estilo.item}>
-            <TouchableOpacity 
-              style={Estilo.checkboxArea} 
-              onPress={() => alternarSelecao(s.nome)}
-              disabled={
-              (selecionados.includes("Nenhum sintoma") && s.nome !== "Nenhum sintoma") ||
-            (s.nome === "Nenhum sintoma" && selecionados.length > 0 && !selecionados.includes("Nenhum sintoma"))
-  }
->
+        <Text style={Estilo.itemText}>{s.nome}</Text>
+      </TouchableOpacity>
 
-              <View style={Estilo.checkbox}>
-                {selecionados.includes(s.nome) && <View style={Estilo.checkboxMarcado} />}
-              </View>
-              <Text style={Estilo.itemText}>{s.nome}</Text>
-            </TouchableOpacity>
+      {selecionados.includes(s.nome) && (
+        <Text 
+          style={[
+            Estilo.acaoText,
+            s.critico && Estilo.acaoCritica,
+            s.positivo && Estilo.acaoPositiva,
+            s.estavel && Estilo.acaoEstavel,
+          ]}
+        >
+          {s.acao}
+        </Text>
+      )}
 
-            {/* Mensagem de orientação */}
-            {selecionados.includes(s.nome) && (
-              <Text 
-                  style={[
-                    Estilo.acaoText,
-                    s.critico && Estilo.acaoCritica,
-                    s.positivo && Estilo.acaoPositiva,
-                    s.estavel && Estilo.acaoEstavel,
-                  ]}
-                >
-                  {s.acao}
-                </Text>
-              )}
+    </View>
+  ))}
 
-            
-          </View>
-        ))}
+  {alerta && (
+    <Text style={Estilo.alertaTexto}>
+      ⚠️ Você selecionou vários sintomas. Procure atendimento imediatamente.</Text>
+  )}
 
-      </ScrollView>
+</ScrollView>
     </View>
   );
 }
@@ -205,8 +225,20 @@ acaoPositiva: {
 },
 
 acaoEstavel: {
-  color: "yellow",
+  color: "blue",
   fontWeight: "bold",
+},
+
+alertaTexto: {
+  marginTop: 20,
+  padding: 15,
+  backgroundColor: "#ffdddd",
+  borderLeftWidth: 6,
+  borderLeftColor: "red",
+  color: "red",
+  fontWeight: "bold",
+  borderRadius: 8,
+  fontSize: 16,
 },
 
 
