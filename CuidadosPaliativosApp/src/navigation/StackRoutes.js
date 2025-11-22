@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabRoutes from './TabRoutes';
 import LoginScreen from '../pages/LoginScreen';
 import SintomasScreen from '../pages/SintomasScreen';
-import TratamentoScreen from '../pages/TratamentoScreen';
+import AtendimentoScreen from '../pages/AtendimentoScreen';
 import ProntuarioScreen from '../pages/ProntuarioScreen';
 import DocumentosScreen from '../pages/DocumentosScreen';
 import CriarContaScreen from '../pages/CriarContaScreen'; // Importar a nova tela
@@ -24,7 +24,7 @@ export default function StackRoutes() {
 
       {/* Telas acessadas a partir dos botões da Home */}
       <Stack.Screen name="Sintomas" component={SintomasScreen} />
-      <Stack.Screen name="Atendimentos" component={TratamentoScreen} />
+      <Stack.Screen name="Atendimentos" component={AtendimentoScreen} />
       <Stack.Screen name="Prontuario" component={ProntuarioScreen} />
       <Stack.Screen name="Documentos" component={DocumentosScreen} />
     </Stack.Navigator>

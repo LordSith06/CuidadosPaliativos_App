@@ -3,9 +3,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from '../pages/HomeScreen';
 import SintomasScreen from '../pages/SintomasScreen';
-import TratamentoScreen from '../pages/TratamentoScreen';
+import TratamentoScreen from '../pages/AtendimentoScreen';
 import ProntuarioScreen from '../pages/ProntuarioScreen';
 import DocumentosScreen from '../pages/DocumentosScreen';
+import AtendimentoScreen from '../pages/AtendimentoScreen';
 
 const Stack = createStackNavigator();
 
@@ -35,7 +36,7 @@ export default function HomeStack() {
       {/* Informações sobre o Tratamento */}
       <Stack.Screen
         name="Atendimentos"
-        component={TratamentoScreen}
+        component={AtendimentoScreen}
         options={{
           headerTitle: '',
           headerStyle: { backgroundColor: '#37758a' },
