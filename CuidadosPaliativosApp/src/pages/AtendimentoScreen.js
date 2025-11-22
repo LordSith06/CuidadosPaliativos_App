@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const BASE_URL = "http://localhost:3000/";
 
 export default function AtendimentoScreen({ route, navigation }) {
-  const { pacienteId } = route.params || {}; 
+  const { pacienteId } = route.params || {};
 
   const [data, setData] = useState('');
   const [medico, setMedico] = useState('');
@@ -38,7 +38,6 @@ export default function AtendimentoScreen({ route, navigation }) {
   };
 
   const cadastrarAtendimento = async () => {
-
     if (!data || !medico || !descricao) {
       setModalMessage("Preencha todos os campos!");
       setModalSuccess(false);
@@ -88,32 +87,43 @@ export default function AtendimentoScreen({ route, navigation }) {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Cadastro de Atendimento</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Data do Atendimento"
-        placeholderTextColor="#d9e3e8"
-        keyboardType="numeric"
-        value={data}
-        onChangeText={(t) => setData(formatarData(t))}
-      />
+      {/* 🔹 TÍTULO DA SEÇÃO (igual ao Medicamentos) */}
+      <Text style={styles.sectionTitle}>🩺 Informações do Atendimento</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nome do Médico"
-        placeholderTextColor="#d9e3e8"
-        value={medico}
-        onChangeText={setMedico}
-      />
+      {/* 🔹 CARD */}
+      <View style={styles.card}>
 
-      <TextInput
-        style={[styles.input, styles.textArea]}
-        placeholder="Descrição do Atendimento"
-        placeholderTextColor="#d9e3e8"
-        multiline
-        value={descricao}
-        onChangeText={setDescricao}
-      />
+        <Text style={styles.label}>Data do Atendimento</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Ex: 20/11/2024"
+          placeholderTextColor="#8396a4"
+          keyboardType="numeric"
+          value={data}
+          onChangeText={(t) => setData(formatarData(t))}
+        />
 
+        <Text style={styles.label}>Nome do Médico</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Ex: Dr. João"
+          placeholderTextColor="#8396a4"
+          value={medico}
+          onChangeText={setMedico}
+        />
+
+        <Text style={styles.label}>Descrição do Atendimento</Text>
+        <TextInput
+          style={[styles.input, styles.textArea]}
+          placeholder="Ex: Acompanhamento do quadro clínico"
+          placeholderTextColor="#8396a4"
+          multiline
+          value={descricao}
+          onChangeText={setDescricao}
+        />
+      </View>
+
+      {/* BOTÃO */}
       <TouchableOpacity
         style={[styles.btnCadastrar, loading && { opacity: 0.7 }]}
         disabled={loading}
@@ -153,27 +163,49 @@ export default function AtendimentoScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#37758a',
+    backgroundColor: '#ffffff',
     padding: 20,
   },
 
   title: {
-    fontSize: 28,
-    color: '#FFD43B',
+    fontSize: 26,
+    color: '#37758a',
     fontWeight: '700',
-    marginBottom: 20,
     textAlign: 'center',
+    marginBottom: 20,
+  },
+
+  sectionTitle: {
+    color: '#37758a',
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 12,
+    marginTop: 10,
+  },
+
+  card: {
+    backgroundColor: '#d9e3e8',
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 20,
+  },
+
+  label: {
+    color: '#37758a',
+    fontWeight: '600',
+    fontSize: 16,
+    marginTop: 10,
   },
 
   input: {
-    backgroundColor: '#2b6b87',
-    width: '100%',
-    height: 50,
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    color: '#fff',
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    padding: 12,
     fontSize: 16,
-    marginVertical: 8,
+    marginTop: 5,
+    borderWidth: 1,
+    borderColor: '#b6c4cc',
+    color: '#333',
   },
 
   textArea: {
@@ -182,19 +214,17 @@ const styles = StyleSheet.create({
   },
 
   btnCadastrar: {
-    backgroundColor: '#d9e3e8',
-    width: '100%',
-    height: 50,
-    borderRadius: 25,
+    backgroundColor: '#37758a',
+    padding: 15,
+    borderRadius: 15,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 10,
   },
 
   txtCadastrar: {
-    color: '#2b6b87',
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '700',
   },
 
   modalOverlay: {
@@ -227,7 +257,7 @@ const styles = StyleSheet.create({
   },
 
   modalButton: {
-    backgroundColor: '#2b6b87',
+    backgroundColor: '#37758a',
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 30,

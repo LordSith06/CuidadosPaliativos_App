@@ -10,16 +10,14 @@ import {
 export default function ProntuarioScreen() {
   const [selecionados, setSelecionados] = useState([]);
   const [alerta, setAlerta] = useState(false);
-   const dataAtual = new Date().toLocaleDateString("pt-BR");
+  const dataAtual = new Date().toLocaleDateString("pt-BR");
 
   useEffect(() => {
-  
     if (selecionados.length > 2 && !selecionados.includes("Nenhum sintoma")) {
-    setAlerta(true);
+      setAlerta(true);
     } else {
       setAlerta(false);
     }
-
   }, [selecionados]);
 
   const sintomas = [
@@ -31,106 +29,90 @@ export default function ProntuarioScreen() {
     { nome: "Cansaço extremo", acao: "Descanse e hidrate-se. Se persistir, consulte um médico.", estavel: true },
     { nome: "Dor no peito", acao: "Procure um hospital imediatamente.", critico: true },
     { nome: "Nenhum sintoma", acao: "Tudo certo. Fico feliz em saber disso", positivo: true }
-  
   ];
 
-  const selecionarSintoma = (sintoma) => {
-  // Se clicou em "Nenhum sintoma"
-  if (sintoma.nome === "Nenhum sintoma") {
-    setSelecionados(["Nenhum sintoma"]);
-    return;
-  }
-  
-
-  // Se "Nenhum sintoma" já está selecionado, ignore
-  if (selecionados.includes("Nenhum sintoma")) return;
-
-  // Caso seja sintoma normal → adiciona normalmente
-  setSelecionados(prev => [...prev, sintoma.nome]);
-  };
-
- const alternarSelecao = (sintoma) => {
-
-  // Se clicou em "Nenhum sintoma"
-  if (sintoma === "Nenhum sintoma") {
-    // Se já está selecionado → desmarca
-    if (selecionados.includes("Nenhum sintoma")) {
-      setSelecionados([]);
+  const alternarSelecao = (sintoma) => {
+    if (sintoma === "Nenhum sintoma") {
+      if (selecionados.includes("Nenhum sintoma")) {
+        setSelecionados([]);
+      } else {
+        setSelecionados(["Nenhum sintoma"]);
+      }
       return;
     }
 
-    // Se NÃO está selecionado → seleciona apenas ele
-    setSelecionados(["Nenhum sintoma"]);
-    return;
-  }
+    if (selecionados.includes("Nenhum sintoma")) {
+      setSelecionados([sintoma]);
+      return;
+    }
 
-  // Se outro sintoma foi clicado e "Nenhum sintoma" está marcado → remove ele
-  if (selecionados.includes("Nenhum sintoma")) {
-    setSelecionados([sintoma]);
-    return;
-  }
-
-  // Alternar sintomas normais
-  if (selecionados.includes(sintoma)) {
-    setSelecionados(selecionados.filter(item => item !== sintoma));
-  } else {
-    setSelecionados([...selecionados, sintoma]);
-  }
-};
+    if (selecionados.includes(sintoma)) {
+      setSelecionados(selecionados.filter(item => item !== sintoma));
+    } else {
+      setSelecionados([...selecionados, sintoma]);
+    }
+  };
 
   return (
-
     <View style={Estilo.container}>
 
-      {/* Cabeçalho */}
+      {/* Header */}
       <View style={Estilo.header}>
-        <Text style={Estilo.headerText}>Sintomas Diários</Text>
+        <Text style={Estilo.headerText}>Prontuário Diário</Text>
       </View>
 
-      {/* Conteúdo */}
-     <ScrollView style={Estilo.content}>
+      <ScrollView style={Estilo.content}>
 
-  <View style={Estilo.linhaTitulo}>
-    <Text style={Estilo.labelLista}>Selecione seus sintomas:</Text>
-    <Text style={Estilo.data}>Data: {dataAtual}</Text>
-  </View>
+        <Text style={Estilo.sectionTitle}>📋 Verificação de Sintomas</Text>
 
-  {sintomas.map((s, index) => (
-    <View key={index} style={Estilo.item}>
+        <View style={Estilo.card}>
 
-      <TouchableOpacity 
-        style={Estilo.checkboxArea}
-        onPress={() => alternarSelecao(s.nome)}
-      >
-        <View style={Estilo.checkbox}>
-          {selecionados.includes(s.nome) && <View style={Estilo.checkboxMarcado} />}
+          <View style={Estilo.linhaTitulo}>
+            <Text style={Estilo.labelLista}>Selecione seus sintomas:</Text>
+            <Text style={Estilo.data}>Data: {dataAtual}</Text>
+          </View>
+
+          {sintomas.map((s, index) => (
+            <View key={index} style={Estilo.item}>
+
+              <TouchableOpacity 
+                style={Estilo.checkboxArea}
+                onPress={() => alternarSelecao(s.nome)}
+              >
+                <View style={Estilo.checkbox}>
+                  {selecionados.includes(s.nome) && (
+                    <View style={Estilo.checkboxMarcado} />
+                  )}
+                </View>
+
+                <Text style={Estilo.itemText}>{s.nome}</Text>
+              </TouchableOpacity>
+
+              {/* AÇÃO SÓ APARECE SE NÃO HOUVER ALERTA */}
+              {!alerta && selecionados.includes(s.nome) && (
+                <Text 
+                  style={[
+                    Estilo.acaoText,
+                    s.critico && Estilo.acaoCritica,
+                    s.positivo && Estilo.acaoPositiva,
+                    s.estavel && Estilo.acaoEstavel,
+                  ]}
+                >
+                  {s.acao}
+                </Text>
+              )}
+            </View>
+          ))}
+
         </View>
 
-        <Text style={Estilo.itemText}>{s.nome}</Text>
-      </TouchableOpacity>
+        {alerta && (
+          <Text style={Estilo.alertaTexto}>
+            ⚠️ Você selecionou vários sintomas. Procure atendimento imediatamente.
+          </Text>
+        )}
 
-      {selecionados.includes(s.nome) && (
-        <Text 
-          style={[
-            Estilo.acaoText,
-            s.critico && Estilo.acaoCritica,
-            s.positivo && Estilo.acaoPositiva,
-            s.estavel && Estilo.acaoEstavel,
-          ]}
-        >
-          {s.acao}
-        </Text>
-      )}
-
-    </View>
-  ))}
-
-  {alerta && (
-    <Text style={Estilo.alertaTexto}>
-      ⚠️ Você selecionou vários sintomas. Procure atendimento imediatamente.</Text>
-  )}
-
-</ScrollView>
+      </ScrollView>
     </View>
   );
 }
@@ -140,107 +122,129 @@ const Estilo = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
+
   header: {
     backgroundColor: '#37758a',
     paddingVertical: 20,
     alignItems: 'center',
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
-    marginBottom: 10,
   },
   headerText: {
     color: '#ffffff',
     fontSize: 22,
     fontWeight: '700',
   },
+
   content: {
     padding: 20,
   },
-  labelLista: {
-    color: '#2b6b87',
-    fontSize: 17,
+
+  sectionTitle: {
+    color: '#37758a',
+    fontSize: 20,
+    fontWeight: '700',
     marginBottom: 10,
+  },
+
+  card: {
+    backgroundColor: '#d9e3e8',
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 15,
+  },
+
+  labelLista: {
+    color: '#37758a',
+    fontSize: 17,
     fontWeight: '600',
   },
+
+  linhaTitulo: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+
+  data: {
+    color: "#37758a",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
   item: {
-    backgroundColor: '#d9e3e8',
+    backgroundColor: '#ffffff',
     padding: 12,
     borderRadius: 10,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#b6c4cc'
   },
+
   itemText: {
-    color: '#2b6b87',
+    color: '#37758a',
     fontSize: 16,
     marginLeft: 10,
   },
+
   checkboxArea: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+
   checkbox: {
     width: 22,
     height: 22,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: '#2b6b87',
+    borderColor: '#37758a',
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   checkboxMarcado: {
     width: 12,
     height: 12,
-    backgroundColor: '#2b6b87',
+    backgroundColor: '#37758a',
     borderRadius: 3,
   },
+
   acaoText: {
     marginTop: 8,
     color: '#2b6b87',
     backgroundColor: '#ffffff',
-    padding: 8,
+    padding: 10,
     borderRadius: 8,
-    fontSize: 18,
+    fontSize: 17,
+    borderWidth: 1,
+    borderColor: '#b6c4cc'
   },
 
-  linhaTitulo: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: 10,
-},
+  acaoCritica: {
+    color: "red",
+    fontWeight: "bold",
+  },
 
-data: {
-  color: "#2b6b87",
-  fontSize: 16,
-  fontWeight: "600",
-},
+  acaoPositiva: {
+    color: "green",
+    fontWeight: "bold",
+  },
 
-acaoCritica: {
-  color: "red",
-  fontWeight: "bold",
-},
+  acaoEstavel: {
+    color: "#1d4e89",
+    fontWeight: "bold",
+  },
 
-acaoPositiva: {
-  color: "green",
-  fontWeight: "bold",
-},
-
-acaoEstavel: {
-  color: "blue",
-  fontWeight: "bold",
-},
-
-alertaTexto: {
-  marginTop: 20,
-  padding: 15,
-  backgroundColor: "#ffdddd",
-  borderLeftWidth: 6,
-  borderLeftColor: "red",
-  color: "red",
-  fontWeight: "bold",
-  borderRadius: 8,
-  fontSize: 16,
-},
-
-
+  alertaTexto: {
+    marginTop: 20,
+    padding: 15,
+    backgroundColor: "#ffdddd",
+    borderLeftWidth: 6,
+    borderLeftColor: "red",
+    color: "red",
+    fontWeight: "bold",
+    borderRadius: 8,
+    fontSize: 16,
+  },
 });
-
