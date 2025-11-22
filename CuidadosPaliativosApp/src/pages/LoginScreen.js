@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
-  Image,
-  Modal
-} from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Modal} from 'react-native';
 
 const BASE_URL = "http://192.168.0.7:3000";
 
@@ -18,6 +10,24 @@ export default function LoginScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalType, setModalType] = useState('success'); // success | error
+  const formatarCpf = (value) => {
+  value = value.replace(/\D/g, ""); // Remove tudo que não for número
+
+  if (value.length > 3) {
+    value = value.replace(/^(\d{3})(\d)/, "$1.$2");
+  }
+
+  if (value.length > 6) {
+    value = value.replace(/^(\d{3})\.(\d{3})(\d)/, "$1.$2.$3");
+  }
+
+  if (value.length > 9) {
+    value = value.replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
+  }
+
+  return value.substring(0, 14); 
+};
+
 
   const showModal = (message, type = 'success') => {
     setModalMessage(message);
@@ -76,7 +86,8 @@ export default function LoginScreen({ navigation }) {
         placeholder="CPF"
         placeholderTextColor="#d9e3e8"
         value={cpf}
-        onChangeText={setCpf}
+        onChangeText={(text) => setCpf(formatarCpf(text))}
+
       />
 
       {/* Campo Senha */}
