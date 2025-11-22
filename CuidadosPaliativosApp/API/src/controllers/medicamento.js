@@ -59,7 +59,7 @@ app.post('/adicionarmedicamento', async (req, res) => {
       return res.status(400).json({ error: true, message: 'Todos os campos são obrigatórios!' });
 
     const [result] = await pool.execute(
-      'INSERT INTO atendimento (nome , miligramagem, descricao) VALUES (?, ?, ?)',
+      'INSERT INTO medicamento (nome , miligramagem, descricao) VALUES (?, ?, ?)',
       [ nome, miligramagem, descricao]
     );
 
@@ -90,17 +90,17 @@ app.get('/medicamentos/:id',auth, async (req, res) => {
 });
 
 //Atualizar medicamento
-app.put('/atualizarmedicamento/:id', auth, async (req, res) => {
+app.put('/atualizarmedicamentos/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
-    const {nome, miligramagem, descricao} = req.body;
+    const { nome, miligramagem, descricao } = req.body;
 
     if (!nome || !miligramagem || !descricao)
       return res.status(400).json({ error: true, message: 'Todos os campos são obrigatórios!' });
 
     const [result] = await pool.execute(
-      'UPDATE medicamento SET nome = ?, miligramagem = ?, descricao = ?',
-      [nome, miligramagem, descricao]
+      'UPDATE medicamento SET nome = ?, miligramagem = ?, descricao = ? WHERE id = ?',
+      [nome, miligramagem, descricao, id]
     );
 
     if (result.affectedRows === 0)
@@ -108,12 +108,18 @@ app.put('/atualizarmedicamento/:id', auth, async (req, res) => {
 
     const [rows] = await pool.execute('SELECT * FROM medicamento WHERE id = ?', [id]);
 
-    res.status(202).json({ error: false, message: 'Medicamento atualizado com sucesso!', medicamento: rows[0] });
+    return res.status(200).json({
+      error: false,
+      message: 'Medicamento atualizado com sucesso!',
+      medicamento: rows[0]
+    });
+
   } catch (error) {
     console.error('Erro ao atualizar medicamento:', error);
-    res.status(400).json({ error: true, message: 'Erro ao atualizar medicamento!' });
+    res.status(500).json({ error: true, message: 'Erro ao atualizar medicamento!' });
   }
 });
+
 
 
 //Remover medicamento
