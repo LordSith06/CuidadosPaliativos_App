@@ -96,9 +96,10 @@ export default function ProntuarioScreen({ navigation }) {
     );
   }
 
+  // Agora temos apenas 2 blocos: paciente + todos atendimentos
   const listaFlat = [
     { tipo: 'paciente', dados: paciente },
-    ...atendimentos.map(a => ({ tipo: 'atendimento', dados: a }))
+    { tipo: 'atendimentos', dados: atendimentos }
   ];
 
   const renderItem = ({ item }) => {
@@ -106,26 +107,42 @@ export default function ProntuarioScreen({ navigation }) {
       return (
         <View style={Estilo.card}>
           <Text style={Estilo.sectionTitle}>📋 Informações do Paciente</Text>
+
           <Text style={Estilo.label}>Nome:</Text>
           <Text style={Estilo.value}>{item.dados.nome}</Text>
+
           <Text style={Estilo.label}>Idade:</Text>
           <Text style={Estilo.value}>
             {new Date().getFullYear() - new Date(item.dados.dataNascimento).getFullYear()} anos
           </Text>
+
           <Text style={Estilo.label}>Diagnóstico:</Text>
           <Text style={Estilo.value}>{item.dados.diagnostico}</Text>
+
           <Text style={Estilo.label}>Responsável Médico:</Text>
           <Text style={Estilo.value}>{item.dados.medico_responsavel}</Text>
         </View>
       );
-    } else if (item.tipo === 'atendimento') {
+    }
+
+    if (item.tipo === 'atendimentos') {
       return (
         <View style={Estilo.card}>
           <Text style={Estilo.sectionTitle}>🩺 Histórico de Atendimentos</Text>
-          <Text style={Estilo.item}>• {item.dados.data} - {item.dados.descricao}</Text>
+
+          {item.dados.length === 0 && (
+            <Text style={Estilo.value}>Nenhum atendimento encontrado.</Text>
+          )}
+
+          {item.dados.map((a, index) => (
+            <Text key={index} style={Estilo.item}>
+              • {a.data} - {a.descricao}
+            </Text>
+          ))}
         </View>
       );
     }
+
     return null;
   };
 
