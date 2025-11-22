@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Modal} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = "http://192.168.0.7:3000";
+// BRUNO: const BASE_URL = "http://192.168.0.7:3000";
+const BASE_URL = "http://192.168.0.118:3000";
 
 export default function LoginScreen({ navigation }) {
 
@@ -55,6 +57,8 @@ export default function LoginScreen({ navigation }) {
         showModal(data.message || "Usuário e/ou senha incorretos!", "error");
         return;
       }
+
+      await AsyncStorage.setItem("TOKEN", data.token);
 
       console.log("Token recebido:", data.token);
       showModal("Login realizado com sucesso!", "success");

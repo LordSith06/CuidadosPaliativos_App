@@ -67,7 +67,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
           <View style={Estilo.menuRow}>
             <MenuButton text="HISTÓRICO CLÍNICO" image={prontuario} screen="Prontuario" />
-            <MenuButton text="MEDICAMENTO" image={medicamento} screen="Medicamento" />
+            <MenuButton text="MEDICAMENTO" image={medicamento} screen="Documentos" />
           </View>
         </View>
       </View>

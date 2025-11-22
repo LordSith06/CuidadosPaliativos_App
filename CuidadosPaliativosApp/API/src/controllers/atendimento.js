@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // JWT Secret
-const JWT_SECRET = 'brunofera';
+const JWT_SECRET = 'caiofera';
 
 // Middleware de Autenticação
 function auth(req, res, next) {
