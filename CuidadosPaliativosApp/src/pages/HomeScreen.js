@@ -15,9 +15,9 @@ import MenuButton from '../components/MenuButton';
 
 // Imagens
 import prontuario from '../assets/img/prontuario.jpg';
-import documento from '../assets/img/documento.jpg';
+import medicamento from '../assets/img/medicamento.png';
 import sintomas from '../assets/img/sintomas.jpg';
-import informacoes from '../assets/img/informações.jpg';
+import atendimento from '../assets/img/atendimento.png';
 
 const HomeScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -63,11 +63,11 @@ const HomeScreen = ({ navigation }) => {
         <View style={Estilo.mainContent}>
           <View style={Estilo.menuRow}>
             <MenuButton text="DIÁRIO DE SINTOMAS" image={sintomas} screen="Sintomas" />
-            <MenuButton text="ATENDIMENTOS" image={informacoes} screen="Atendimentos" />
+            <MenuButton text="ATENDIMENTOS" image={atendimento} screen="Atendimentos" />
           </View>
           <View style={Estilo.menuRow}>
             <MenuButton text="HISTÓRICO CLÍNICO" image={prontuario} screen="Prontuario" />
-            <MenuButton text="MENDICAMENTO" image={documento} screen="Documentos" />
+            <MenuButton text="MEDICAMENTO" image={medicamento} screen="Medicamento" />
           </View>
         </View>
       </View>
