@@ -1,68 +1,71 @@
+import React, { useState } from 'react';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  StyleSheet, 
+  TouchableOpacity, 
+  ScrollView 
+} from 'react-native';
 
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+export default function CadastroMedicamentoScreen() {
+  const [nome, setNome] = useState('');
+  const [mg, setMg] = useState('');
+  const [descricao, setDescricao] = useState('');
 
-export default function DocumentosScreen() {
-  // Função simulada para "baixar" documento
-  const abrirDocumento = (nome) => {
-    Alert.alert('Ação', `Abrindo documento: ${nome}`);
+  const handleSalvar = () => {
+    if (!nome || !mg || !descricao) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    alert("Medicamento cadastrado com sucesso!");
   };
 
   return (
     <View style={Estilo.container}>
       {/* Cabeçalho */}
       <View style={Estilo.header}>
-        <Text style={Estilo.headerText}>Medicamentos</Text>
+        <Text style={Estilo.headerText}>Cadastro de Medicamentos</Text>
       </View>
 
-      {/* Conteúdo */}
       <ScrollView style={Estilo.content}>
-        <Text style={Estilo.info}>
-          Aqui você pode visualizar e baixar documentos clínicos importantes, como exames e laudos médicos.
-        </Text>
+        <Text style={Estilo.sectionTitle}>💊 Informações do Medicamento</Text>
 
-        {/* Lista de documentos */}
-        <TouchableOpacity 
-          style={Estilo.card}
-          onPress={() => abrirDocumento('Laudo Médico - 10/10/2024.pdf')}
-        >
-          <Icon name="file-text" size={24} color="#2b6b87" />
-          <Text style={Estilo.cardText}>Laudo Médico - 10/10/2024.pdf</Text>
+        <View style={Estilo.card}>
+          <Text style={Estilo.label}>Nome do medicamento</Text>
+          <TextInput
+            style={Estilo.input}
+            placeholder="Ex: Paracetamol"
+            value={nome}
+            onChangeText={setNome}
+          />
+
+          <Text style={Estilo.label}>Miligramagem</Text>
+          <TextInput
+            style={Estilo.input}
+            placeholder="Ex: 500mg"
+            value={mg}
+            onChangeText={setMg}
+          />
+
+          <Text style={Estilo.label}>Descrição / Observações</Text>
+          <TextInput
+            style={[Estilo.input, { height: 100 }]}
+            placeholder="Ex: Tomar de 8 em 8 horas"
+            value={descricao}
+            onChangeText={setDescricao}
+            multiline
+          />
+        </View>
+
+        <TouchableOpacity style={Estilo.botao} onPress={handleSalvar}>
+          <Text style={Estilo.botaoTexto}>Salvar Medicamento</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={Estilo.card}
-          onPress={() => abrirDocumento('Exame de Sangue - 25/09/2024.pdf')}
-        >
-          <Icon name="file-text" size={24} color="#2b6b87" />
-          <Text style={Estilo.cardText}>Exame de Sangue - 25/09/2024.pdf</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={Estilo.card}
-          onPress={() => abrirDocumento('Receita Médica - 20/09/2024.pdf')}
-        >
-          <Icon name="file-text" size={24} color="#2b6b87" />
-          <Text style={Estilo.cardText}>Receita Médica - 20/09/2024.pdf</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={Estilo.card}
-          onPress={() => abrirDocumento('Relatório de Enfermagem - 05/09/2024.pdf')}
-        >
-          <Icon name="file-text" size={24} color="#2b6b87" />
-          <Text style={Estilo.cardText}>Relatório de Enfermagem - 05/09/2024.pdf</Text>
-        </TouchableOpacity>
-
-        <Text style={Estilo.footer}>
-          Para acessar os arquivos reais, entre em contato com a equipe responsável.
-        </Text>
       </ScrollView>
     </View>
   );
 }
-
 
 const Estilo = StyleSheet.create({
   container: {
@@ -84,30 +87,44 @@ const Estilo = StyleSheet.create({
   content: {
     padding: 20,
   },
-  info: {
-    color: '#333333',
-    fontSize: 16,
-    marginBottom: 15,
-    textAlign: 'justify',
+  sectionTitle: {
+    color: '#37758a',
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 8,
+    marginTop: 10,
   },
   card: {
-    flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: '#d9e3e8',
     borderRadius: 15,
-    padding: 12,
-    marginBottom: 10,
+    padding: 15,
+    marginBottom: 15,
   },
-  cardText: {
-    color: '#2b6b87',
+  label: {
+    color: '#37758a',
+    fontWeight: '600',
     fontSize: 16,
-    marginLeft: 10,
+    marginTop: 10,
   },
-  footer: {
-    textAlign: 'center',
-    color: '#2b6b87',
-    fontStyle: 'italic',
-    marginTop: 25,
-    fontSize: 15,
+  input: {
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 5,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#b6c4cc',
+  },
+  botao: {
+    backgroundColor: '#37758a',
+    padding: 15,
+    borderRadius: 15,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  botaoTexto: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '700',
   },
 });
