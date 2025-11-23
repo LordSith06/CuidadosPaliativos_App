@@ -139,17 +139,18 @@ app.get('/pacientes/:id',auth, async (req, res) => {
 });
 
 //Atualizar paciente 
-app.put('/atualizarpaciente/:id',auth, async (req, res) => {
+app.put('/atualizarpaciente/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { nome, cpf, senha, medico_responsavel, diagnostico, dataNascimento } = req.body;
+    const { nome, cpf, medico_responsavel, diagnostico, dataNascimento } = req.body;
 
-    if (!nome || !cpf || !senha || !medico_responsavel || !diagnostico || !dataNascimento)
+    // Validação sem a senha
+    if (!nome || !cpf || !medico_responsavel || !diagnostico || !dataNascimento)
       return res.status(400).json({ error: true, message: 'Informe todos os campos' });
 
     const [result] = await pool.execute(
-      'UPDATE paciente SET nome = ?, cpf = ?, senha = ?,  medico_responsavel = ?, diagnostico = ?, dataNascimento = ? WHERE id = ?',
-      [nome, cpf, senha, medico_responsavel, diagnostico, dataNascimento, id]
+      'UPDATE paciente SET nome = ?, cpf = ?, medico_responsavel = ?, diagnostico = ?, dataNascimento = ? WHERE id = ?',
+      [nome, cpf, medico_responsavel, diagnostico, dataNascimento, id]
     );
 
     if (result.affectedRows === 0)

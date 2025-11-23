@@ -11,7 +11,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = "http://192.168.0.118:3000/";
+const BASE_URL = "http://10.0.1.20:3000/";
 
 export default function AtendimentoScreen({ route, navigation }) {
   const [data, setData] = useState('');
@@ -28,7 +28,10 @@ export default function AtendimentoScreen({ route, navigation }) {
 
   const [token, setToken] = useState('');
 
-  // Carregar token do AsyncStorage
+  // Estados novos para edição
+  const [modalEditarVisible, setModalEditarVisible] = useState(false);
+  const [atendimentoEditando, setAtendimentoEditando] = useState(null);
+
   useEffect(() => {
     const carregarToken = async () => {
       const t = await AsyncStorage.getItem("TOKEN");
@@ -148,9 +151,7 @@ export default function AtendimentoScreen({ route, navigation }) {
       const pacienteId = decoded.id;
 
       const res = await fetch(`${BASE_URL}atendimento`, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
+        headers: { "Authorization": `Bearer ${token}` }
       });
 
       if (!res.ok) {
@@ -169,6 +170,59 @@ export default function AtendimentoScreen({ route, navigation }) {
       setModalMessage(err.message || "Erro ao listar atendimentos");
       setModalSuccess(false);
       setModalVisible(true);
+    }
+  };
+
+  // 👉 FUNÇÃO DE SALVAR A EDIÇÃO (PUT)
+  const handleSalvarEdicao = async () => {
+    try {
+      const token = await AsyncStorage.getItem("TOKEN");
+
+      const res = await fetch(`${BASE_URL}atendimento/${atendimentoEditando.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(atendimentoEditando)
+      });
+
+      if (!res.ok) throw new Error("Erro ao atualizar atendimento");
+
+      setModalEditarVisible(false);
+      listarAtendimentos();
+
+      setModalMessage("Atendimento atualizado!");
+      setModalSuccess(true);
+      setModalVisible(true);
+
+    } catch (e) {
+      alert("Erro ao salvar edição");
+      console.log(e);
+    }
+  };
+
+  // 👉 FUNÇÃO DE EXCLUIR
+  const handleExcluir = async (id) => {
+    try {
+      const token = await AsyncStorage.getItem("TOKEN");
+
+      const res = await fetch(`${BASE_URL}atendimento/${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      if (!res.ok) throw new Error("Erro ao excluir");
+
+      listarAtendimentos();
+
+      setModalMessage("Atendimento excluído!");
+      setModalSuccess(true);
+      setModalVisible(true);
+
+    } catch (e) {
+      alert("Erro ao excluir");
+      console.log(e);
     }
   };
 
@@ -206,7 +260,7 @@ export default function AtendimentoScreen({ route, navigation }) {
         <Text style={styles.label}>Descrição do Atendimento</Text>
         <TextInput
           style={[styles.input, styles.textArea]}
-          placeholder="Ex: Acompanhamento do quadro clínico"
+          placeholder="Ex: Acompanhamento"
           placeholderTextColor="#8396a4"
           multiline
           value={descricao}
@@ -231,36 +285,12 @@ export default function AtendimentoScreen({ route, navigation }) {
         <Text style={styles.txtCadastrar}>Listar Atendimentos</Text>
       </TouchableOpacity>
 
-      {/* Modal de mensagens */}
-      <Modal animationType="fade" transparent visible={modalVisible}>
-        <View style={styles.modalOverlay}>
-          <View
-            style={[
-              styles.modalContent,
-              modalSuccess ? styles.modalSuccess : styles.modalError
-            ]}
-          >
-            <Icon
-              name={modalSuccess ? "check-circle" : "error"}
-              size={55}
-              color={modalSuccess ? "#4CAF50" : "#f44336"}
-            />
-            <Text style={styles.modalText}>{modalMessage}</Text>
-
-            <TouchableOpacity style={styles.modalButton} onPress={fecharModal}>
-              <Text style={styles.modalButtonText}>OK</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Modal da lista de atendimentos */}
+      {/* Modal da Lista de Atendimentos */}
       <Modal animationType="slide" transparent visible={modalListaVisible}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { width: '90%', maxHeight: '80%' }]}>
-            <Text style={{ fontSize: 20, fontWeight: '700', marginBottom: 15, color: '#000' }}>
-            Meus Atendimentos
-            </Text>
+            
+            <Text style={styles.modalTitle}>Meus Atendimentos</Text>
 
             <ScrollView>
               {atendimentos.map((item, index) => (
@@ -268,6 +298,27 @@ export default function AtendimentoScreen({ route, navigation }) {
                   <Text style={styles.label}>Data: {item.data}</Text>
                   <Text style={styles.label}>Médico: {item.medico}</Text>
                   <Text style={styles.label}>Descrição: {item.descricao}</Text>
+
+                  <View style={styles.actionRow}>
+                    
+                    {/* EDITAR */}
+                    <TouchableOpacity
+                      onPress={() => {
+                        setAtendimentoEditando(item);
+                        setModalEditarVisible(true);
+                      }}
+                    >
+                      <Icon name="edit" size={28} color="#37758a" />
+                    </TouchableOpacity>
+
+                    {/* EXCLUIR */}
+                    <TouchableOpacity
+                      onPress={() => handleExcluir(item.id)}
+                    >
+                      <Icon name="delete" size={28} color="#d9534f" />
+                    </TouchableOpacity>
+
+                  </View>
                 </View>
               ))}
             </ScrollView>
@@ -278,6 +329,60 @@ export default function AtendimentoScreen({ route, navigation }) {
             >
               <Text style={styles.modalButtonText}>Fechar</Text>
             </TouchableOpacity>
+
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal de EDIÇÃO */}
+      <Modal animationType="slide" transparent visible={modalEditarVisible}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { width: '90%' }]}>
+            
+            <Text style={styles.modalTitle}>Editar Atendimento</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Data"
+              value={atendimentoEditando?.data || ""}
+              onChangeText={(t) =>
+                setAtendimentoEditando({ ...atendimentoEditando, data: t })
+              }
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Médico"
+              value={atendimentoEditando?.medico || ""}
+              onChangeText={(t) =>
+                setAtendimentoEditando({ ...atendimentoEditando, medico: t })
+              }
+            />
+
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Descrição"
+              multiline
+              value={atendimentoEditando?.descricao || ""}
+              onChangeText={(t) =>
+                setAtendimentoEditando({ ...atendimentoEditando, descricao: t })
+              }
+            />
+
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleSalvarEdicao}
+            >
+              <Text style={styles.modalButtonText}>Salvar Alterações</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.modalButton, { backgroundColor: "#777", marginTop: 10 }]}
+              onPress={() => setModalEditarVisible(false)}
+            >
+              <Text style={styles.modalButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+
           </View>
         </View>
       </Modal>
@@ -297,10 +402,12 @@ const styles = StyleSheet.create({
   btnCadastrar: { backgroundColor: '#37758a', padding: 15, borderRadius: 15, alignItems: 'center', marginTop: 10 },
   txtCadastrar: { color: '#ffffff', fontSize: 18, fontWeight: '700' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', alignItems: 'center' },
-  modalContent: { width: '80%', borderRadius: 20, padding: 25, alignItems: 'center' },
+  modalContent: { width: '80%', borderRadius: 20, padding: 25, alignItems: 'center', backgroundColor: '#fff' },
   modalSuccess: { backgroundColor: '#e8f5e9' },
   modalError: { backgroundColor: '#ffebee' },
   modalText: { fontSize: 18, textAlign: 'center', marginVertical: 15, color: '#333' },
   modalButton: { backgroundColor: '#37758a', borderRadius: 20, paddingVertical: 10, paddingHorizontal: 30 },
   modalButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  modalTitle: { fontSize: 22, fontWeight: '700', color: '#000', textAlign: 'center', marginBottom: 15 },
+  actionRow: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 18, marginTop: 12 },
 });

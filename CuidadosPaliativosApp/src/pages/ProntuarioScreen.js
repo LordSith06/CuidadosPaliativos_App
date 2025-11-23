@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = "http://192.168.0.118:3000/";
+const BASE_URL = "http://10.0.1.20:3000/";
 
 export default function ProntuarioScreen({ navigation }) {
   const [paciente, setPaciente] = useState(null);
   const [atendimentos, setAtendimentos] = useState([]);
+  const [medicamentos, setMedicamentos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Função para decodificar JWT
+  // --- Modal edição paciente ---
+  const [modalEditarPacienteVisible, setModalEditarPacienteVisible] = useState(false);
+  const [editNome, setEditNome] = useState('');
+  const [editCpf, setEditCpf] = useState('');
+  const [editMedicoResponsavel, setEditMedicoResponsavel] = useState('');
+  const [editDiagnostico, setEditDiagnostico] = useState('');
+  const [editDataNascimento, setEditDataNascimento] = useState('');
+  const [loadingEditPaciente, setLoadingEditPaciente] = useState(false);
+
   const parseJwt = (token) => {
     try {
       const base64Url = token.split('.')[1];
@@ -31,18 +40,10 @@ export default function ProntuarioScreen({ navigation }) {
     const fetchDados = async () => {
       try {
         const token = await AsyncStorage.getItem('TOKEN');
-        if (!token) {
-          console.error("Token não encontrado!");
-          setLoading(false);
-          return;
-        }
+        if (!token) return setLoading(false);
 
         const decoded = parseJwt(token);
-        if (!decoded || !decoded.id) {
-          console.error("Token inválido!");
-          setLoading(false);
-          return;
-        }
+        if (!decoded || !decoded.id) return setLoading(false);
 
         const pacienteId = decoded.id;
 
@@ -51,23 +52,26 @@ export default function ProntuarioScreen({ navigation }) {
           headers: { Authorization: `Bearer ${token}` }
         });
         const dataPaciente = await respPaciente.json();
-
-        if (dataPaciente.error) {
-          console.error(dataPaciente.message);
-          setLoading(false);
-          return;
-        }
-        setPaciente(dataPaciente.usuario);
+        if (!dataPaciente.error) setPaciente(dataPaciente.usuario);
 
         // Buscar atendimentos
         const respAtend = await fetch(`${BASE_URL}atendimento`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const dataAtend = await respAtend.json();
-
         if (!dataAtend.error) {
-          const meusAtendimentos = dataAtend.filter(a => a.pacienteId === pacienteId);
-          setAtendimentos(meusAtendimentos);
+          const meusAtend = dataAtend.filter(a => a.pacienteId === pacienteId);
+          setAtendimentos(meusAtend);
+        }
+
+        // Buscar medicamentos
+        const respMed = await fetch(`${BASE_URL}medicamentos`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const dataMed = await respMed.json();
+        if (!dataMed.error) {
+          const meusMedicamentos = dataMed.medicamentos.filter(m => m.pacienteId === pacienteId);
+          setMedicamentos(meusMedicamentos);
         }
 
       } catch (error) {
@@ -80,26 +84,67 @@ export default function ProntuarioScreen({ navigation }) {
     fetchDados();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={Estilo.container}>
-        <Text style={{ textAlign: 'center', marginTop: 50 }}>Carregando...</Text>
-      </View>
-    );
-  }
+  const abrirModalEdicaoPaciente = () => {
+    if (!paciente) return;
 
-  if (!paciente) {
-    return (
-      <View style={Estilo.container}>
-        <Text style={{ textAlign: 'center', marginTop: 50 }}>Paciente não encontrado!</Text>
-      </View>
-    );
-  }
+    setEditNome(paciente.nome || '');
+    setEditCpf(paciente.cpf || '');
+    setEditMedicoResponsavel(paciente.medico_responsavel || '');
+    setEditDiagnostico(paciente.diagnostico || '');
+    setEditDataNascimento(paciente.dataNascimento ? paciente.dataNascimento.split('T')[0] : '');
+    setModalEditarPacienteVisible(true);
+  };
 
-  // Agora temos apenas 2 blocos: paciente + todos atendimentos
+  const salvarEdicaoPaciente = async () => {
+    if (!editNome || !editCpf || !editMedicoResponsavel || !editDiagnostico || !editDataNascimento) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    try {
+      setLoadingEditPaciente(true);
+      const token = await AsyncStorage.getItem('TOKEN');
+      if (!token) throw new Error("Token não encontrado");
+
+      const decoded = parseJwt(token);
+      const pacienteId = decoded?.id;
+
+      const res = await fetch(`${BASE_URL}atualizarpaciente/${pacienteId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          nome: editNome,
+          cpf: editCpf,
+          medico_responsavel: editMedicoResponsavel,
+          diagnostico: editDiagnostico,
+          dataNascimento: editDataNascimento
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Erro ao atualizar paciente");
+
+      setPaciente(data.usuario);
+      setModalEditarPacienteVisible(false);
+      alert("Paciente atualizado com sucesso!");
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    } finally {
+      setLoadingEditPaciente(false);
+    }
+  };
+
+  if (loading) return <View style={Estilo.container}><Text style={{ textAlign: 'center', marginTop: 50 }}>Carregando...</Text></View>;
+  if (!paciente) return <View style={Estilo.container}><Text style={{ textAlign: 'center', marginTop: 50 }}>Paciente não encontrado!</Text></View>;
+
   const listaFlat = [
     { tipo: 'paciente', dados: paciente },
-    { tipo: 'atendimentos', dados: atendimentos }
+    { tipo: 'atendimentos', dados: atendimentos },
+    { tipo: 'medicamentos', dados: medicamentos }
   ];
 
   const renderItem = ({ item }) => {
@@ -107,6 +152,11 @@ export default function ProntuarioScreen({ navigation }) {
       return (
         <View style={Estilo.card}>
           <Text style={Estilo.sectionTitle}>📋 Informações do Paciente</Text>
+
+          {/* Botão editar no canto superior direito */}
+          <TouchableOpacity style={Estilo.botaoEditarCard} onPress={abrirModalEdicaoPaciente}>
+            <Text style={{ color: '#fff', fontWeight: '700' }}>✏️</Text>
+          </TouchableOpacity>
 
           <Text style={Estilo.label}>Nome:</Text>
           <Text style={Estilo.value}>{item.dados.nome}</Text>
@@ -129,15 +179,27 @@ export default function ProntuarioScreen({ navigation }) {
       return (
         <View style={Estilo.card}>
           <Text style={Estilo.sectionTitle}>🩺 Histórico de Atendimentos</Text>
-
-          {item.dados.length === 0 && (
-            <Text style={Estilo.value}>Nenhum atendimento encontrado.</Text>
-          )}
-
+          {item.dados.length === 0 && <Text style={Estilo.value}>Nenhum atendimento encontrado.</Text>}
           {item.dados.map((a, index) => (
             <Text key={index} style={Estilo.item}>
               • {a.data} - {a.descricao}
             </Text>
+          ))}
+        </View>
+      );
+    }
+
+    if (item.tipo === 'medicamentos') {
+      return (
+        <View style={Estilo.card}>
+          <Text style={Estilo.sectionTitle}>💊 Medicamentos</Text>
+          {item.dados.length === 0 && <Text style={Estilo.value}>Nenhum medicamento cadastrado.</Text>}
+          {item.dados.map((m, index) => (
+            <View key={index} style={{ marginBottom: 10 }}>
+              <Text style={Estilo.label}>Nome: <Text style={Estilo.value}>{m.nome}</Text></Text>
+              <Text style={Estilo.label}>Miligramagem: <Text style={Estilo.value}>{m.miligramagem}</Text></Text>
+              <Text style={Estilo.label}>Descrição: <Text style={Estilo.value}>{m.descricao}</Text></Text>
+            </View>
           ))}
         </View>
       );
@@ -154,6 +216,47 @@ export default function ProntuarioScreen({ navigation }) {
         renderItem={renderItem}
         contentContainerStyle={{ padding: 20 }}
       />
+
+      {/* Modal Edição Paciente */}
+      <Modal animationType="slide" transparent visible={modalEditarPacienteVisible}>
+        <View style={Estilo.modalOverlay}>
+          <View style={[Estilo.modalContent, { width: '90%' }]}>
+            <Text style={{ fontSize: 20, fontWeight: '700', marginBottom: 15, color: '#000' }}>
+              Editar Paciente
+            </Text>
+
+            <Text style={Estilo.label}>Nome</Text>
+            <TextInput style={Estilo.input} value={editNome} onChangeText={setEditNome} />
+
+            <Text style={Estilo.label}>CPF</Text>
+            <TextInput style={Estilo.input} value={editCpf} onChangeText={setEditCpf} />
+
+            <Text style={Estilo.label}>Médico Responsável</Text>
+            <TextInput style={Estilo.input} value={editMedicoResponsavel} onChangeText={setEditMedicoResponsavel} />
+
+            <Text style={Estilo.label}>Diagnóstico</Text>
+            <TextInput style={Estilo.input} value={editDiagnostico} onChangeText={setEditDiagnostico} />
+
+            <Text style={Estilo.label}>Data de Nascimento</Text>
+            <TextInput style={Estilo.input} value={editDataNascimento} onChangeText={setEditDataNascimento} placeholder="YYYY-MM-DD" />
+
+            <TouchableOpacity
+              style={[Estilo.botao, { marginTop: 20 }]}
+              onPress={salvarEdicaoPaciente}
+              disabled={loadingEditPaciente}
+            >
+              <Text style={Estilo.botaoTexto}>{loadingEditPaciente ? "Salvando..." : "Salvar Alterações"}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[Estilo.modalButton, { marginTop: 10 }]}
+              onPress={() => setModalEditarPacienteVisible(false)}
+            >
+              <Text style={Estilo.modalButtonText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -162,7 +265,26 @@ const Estilo = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#ffffff' },
   card: { backgroundColor: '#d9e3e8', borderRadius: 15, padding: 15, marginBottom: 15 },
   sectionTitle: { color: '#37758a', fontSize: 18, fontWeight: '700', marginBottom: 8, marginTop: 10 },
-  label: { color: '#37758a', fontWeight: '600', fontSize: 16, marginTop: 5 },
-  value: { color: '#333333', fontSize: 16, marginBottom: 5 },
+  label: { color: '#37758a', fontWeight: '600', fontSize: 16 },
+  value: { color: '#333333', fontSize: 16 },
   item: { color: '#333333', fontSize: 16, marginBottom: 4 },
+
+  input: { backgroundColor: '#ffffff', borderRadius: 10, padding: 10, marginTop: 5, fontSize: 16, borderWidth: 1, borderColor: '#b6c4cc' },
+  botao: { backgroundColor: '#37758a', padding: 15, borderRadius: 15, alignItems: 'center', marginTop: 10 },
+  botaoTexto: { color: '#ffffff', fontSize: 18, fontWeight: '700' },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', alignItems: 'center' },
+  modalContent: { width: '80%', borderRadius: 20, padding: 25, alignItems: 'center', backgroundColor: '#fff' },
+  modalButton: { backgroundColor: '#37758a', borderRadius: 20, paddingVertical: 10, paddingHorizontal: 30, marginTop: 10 },
+  modalButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+
+  // botão de editar no card
+  botaoEditarCard: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#37758a',
+    padding: 8,
+    borderRadius: 20,
+    zIndex: 10
+  }
 });
