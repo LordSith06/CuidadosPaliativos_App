@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = "http://10.0.1.20:3000/";
+const BASE_URL = "http://192.168.0.226:3000/";
 
 export default function ProntuarioScreen({ navigation }) {
   const [paciente, setPaciente] = useState(null);

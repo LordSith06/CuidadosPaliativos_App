@@ -11,7 +11,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = "http://10.0.1.20:3000/";
+const BASE_URL = "http://192.168.0.226:3000/";
 
 export default function CadastroMedicamentoScreen({ navigation }) {
   const [nome, setNome] = useState('');
