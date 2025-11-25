@@ -7,6 +7,7 @@ import TratamentoScreen from '../pages/AtendimentoScreen';
 import ProntuarioScreen from '../pages/ProntuarioScreen';
 import DocumentosScreen from '../pages/DocumentosScreen';
 import AtendimentoScreen from '../pages/AtendimentoScreen';
+import AvaliacaoScreen from '../pages/AvaliacaoScreen';
 
 const Stack = createStackNavigator();
 
@@ -59,6 +60,16 @@ export default function HomeStack() {
       <Stack.Screen
         name="Documentos"
         component={DocumentosScreen}
+        options={{
+          headerTitle: '',
+          headerStyle: { backgroundColor: '#37758a' },
+          headerTintColor: '#fff',
+        }}
+      />
+
+      <Stack.Screen
+        name="Avaliacao"
+        component={AvaliacaoScreen}
         options={{
           headerTitle: '',
           headerStyle: { backgroundColor: '#37758a' },

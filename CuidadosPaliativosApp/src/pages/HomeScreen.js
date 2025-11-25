@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import {
-  SafeAreaView,
+import { SafeAreaView,
   View,
   Text,
   StatusBar,
@@ -18,6 +17,7 @@ import prontuario from '../assets/img/prontuario.jpg';
 import medicamento from '../assets/img/medicamento.png';
 import sintomas from '../assets/img/sintomas.jpg';
 import atendimento from '../assets/img/atendimento.png';
+import { ScrollView } from 'react-native';
 
 const HomeScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,15 +40,32 @@ const HomeScreen = ({ navigation }) => {
       <View style={Estilo.container}>
         {/* Cabeçalho */}
         <View style={Estilo.header}>
-          {/* Botão de Sair */}
-          <TouchableOpacity onPress={() => setModalVisible(true)} style={Estilo.btnSair}>
+          {/* Botão de Sair - esquerda */}
+          <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+            style={Estilo.btnSair}
+          >
             <Icon name="sign-out-alt" size={18} color="#FFD700" />
             <Text style={Estilo.txtSair}>Sair</Text>
           </TouchableOpacity>
 
-          {/* Título */}
+          {/* Botão de Avaliação - direita */}
+         <TouchableOpacity
+            onPress={() => navigation.navigate('Avaliacao')}
+            style={Estilo.btnAvaliacao}
+          >
+            <Icon name="star" size={18} color="#FFD700" />
+            <Text style={Estilo.txtAvaliacao}>Avaliação</Text>
+        </TouchableOpacity>
+
+          {/* Título central */}
           <View style={Estilo.headerTitleContainer}>
-            <Icon name="heartbeat" size={30} color="#FFD700" style={Estilo.headerIcon}/>
+            <Icon
+              name="heartbeat"
+              size={30}
+              color="#FFD700"
+              style={Estilo.headerIcon}
+            />
             <View style={Estilo.logoContainer}>
               <Text style={Estilo.headerTextSmall}>O QUE SÃO</Text>
               <Text style={Estilo.headerTextLarge}>Cuidados</Text>
@@ -81,16 +98,29 @@ const HomeScreen = ({ navigation }) => {
       >
         <View style={Estilo.modalOverlay}>
           <View style={Estilo.modalContainer}>
-            <Icon name="sign-out-alt" size={40} color="#37758a" style={{ marginBottom: 10 }} />
+            <Icon
+              name="sign-out-alt"
+              size={40}
+              color="#37758a"
+              style={{ marginBottom: 10 }}
+            />
             <Text style={Estilo.modalTitle}>Deseja realmente sair?</Text>
-            <Text style={Estilo.modalMessage}>Você será desconectado da sua conta.</Text>
+            <Text style={Estilo.modalMessage}>
+              Você será desconectado da sua conta.
+            </Text>
 
             <View style={Estilo.modalButtons}>
-              <TouchableOpacity style={[Estilo.btnModal, Estilo.btnCancelar]} onPress={() => setModalVisible(false)}>
+              <TouchableOpacity
+                style={[Estilo.btnModal, Estilo.btnCancelar]}
+                onPress={() => setModalVisible(false)}
+              >
                 <Text style={Estilo.txtBtnCancelar}>Cancelar</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={[Estilo.btnModal, Estilo.btnConfirmar]} onPress={handleLogoutConfirm}>
+              <TouchableOpacity
+                style={[Estilo.btnModal, Estilo.btnConfirmar]}
+                onPress={handleLogoutConfirm}
+              >
                 <Text style={Estilo.txtBtnConfirmar}>Sair</Text>
               </TouchableOpacity>
             </View>
@@ -126,6 +156,21 @@ const Estilo = StyleSheet.create({
     marginLeft: 8,
     fontWeight: '600',
   },
+  btnAvaliacao: {
+    position: 'absolute',
+    right: 15,
+    top: Platform.OS === 'android' ? 10 : 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  txtAvaliacao: {
+    color: '#FFD700',
+    fontSize: 16,
+    marginLeft: 6,
+    fontWeight: '600',
+  },
   headerIcon: { marginRight: 15 },
   logoContainer: { alignItems: 'center' },
   headerTextSmall: { color: 'white', fontSize: 16, fontWeight: '300' },
@@ -146,7 +191,6 @@ const Estilo = StyleSheet.create({
     width: '100%',
     ...Platform.select({ web: { maxWidth: 600, marginBottom: 40 } })
   },
-
   // Modal estilos
   modalOverlay: {
     flex: 1,

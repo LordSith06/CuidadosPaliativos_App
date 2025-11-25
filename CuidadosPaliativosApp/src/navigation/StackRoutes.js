@@ -7,6 +7,7 @@ import AtendimentoScreen from '../pages/AtendimentoScreen';
 import ProntuarioScreen from '../pages/ProntuarioScreen';
 import DocumentosScreen from '../pages/DocumentosScreen';
 import CriarContaScreen from '../pages/CriarContaScreen'; // Importar a nova tela
+import AvaliacaoScreen from '../pages/AvaliacaoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,7 @@ export default function StackRoutes() {
       <Stack.Screen name="Atendimentos" component={AtendimentoScreen} />
       <Stack.Screen name="Prontuario" component={ProntuarioScreen} />
       <Stack.Screen name="Documentos" component={DocumentosScreen} />
+      <Stack.Screen name="Avaliacao" component={AvaliacaoScreen} />
     </Stack.Navigator>
   );
 }

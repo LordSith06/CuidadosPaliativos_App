@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Modal } 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const BASE_URL = "http://192.168.0.226:3000/";
+const BASE_URL = "http://192.168.0.47:3000/";
 
 export default function ProntuarioScreen({ navigation }) {
   const [paciente, setPaciente] = useState(null);
