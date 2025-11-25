@@ -21,6 +21,7 @@ export default function CadastroMedicamentoScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalSuccess, setModalSuccess] = useState(false);
+  
   const [loading, setLoading] = useState(false);
 
   const [modalListaVisible, setModalListaVisible] = useState(false);
@@ -187,7 +188,7 @@ export default function CadastroMedicamentoScreen({ navigation }) {
       if (!token) {
         setModalMessage("Token não encontrado. Faça login novamente!");
         setModalSuccess(false);
-        setModalVisible(true);
+        setModalError(true);
         return;
       }
 

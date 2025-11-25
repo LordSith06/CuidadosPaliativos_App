@@ -24,6 +24,8 @@ export default function AtendimentoScreen({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalSuccess, setModalSuccess] = useState(false);
+  const [modalError, setModalError] = useState(false);
+  const [modalErrorEdit, setModalErrorEdit] = useState(false);
 
   const [modalListaVisible, setModalListaVisible] = useState(false);
   const [atendimentos, setAtendimentos] = useState([]);
@@ -226,7 +228,7 @@ if (dataEhFutura(data)) {
     setModalVisible(true);
 
   } catch (e) {
-    alert("Erro ao salvar edição");
+    setModalErrorEdit(true);
     console.log(e);
   }
 };
@@ -246,8 +248,7 @@ if (dataEhFutura(data)) {
       listarAtendimentos();
 
       setModalMessage("Atendimento excluído!");
-      setModalSuccess(true);
-      setModalVisible(true);
+      setModalError(true);
 
     } catch (e) {
       alert("Erro ao excluir");
@@ -493,6 +494,62 @@ if (dataEhFutura(data)) {
   </View>
 </Modal>
 
+<Modal animationType="fade" transparent visible={modalErrorEdit}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, styles.modalErrorBox]}>
+            
+            <Icon 
+              name="error" 
+              size={55} 
+              color="#f44336"
+              style={{ marginBottom: 10 }}
+            />
+
+            <Text style={styles.modalTitle}>Atenção</Text>
+
+            <Text style={styles.modalErrorMessage}>
+              Preencha todos os campos antes de continuar!
+            </Text>
+
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setModalError(false)}
+            >
+              <Text style={styles.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+
+          </View>
+        </View>
+      </Modal>
+
+<Modal animationType="fade" transparent visible={modalError}>
+              <View style={styles.modalOverlay}>
+                <View style={[styles.modalContent, styles.modalErrorBox]}>
+                  
+                  <Icon 
+                    name="error" 
+                    size={55} 
+                    color="#f44336"
+                    style={{ marginBottom: 10 }}
+                  />
+      
+                  <Text style={styles.modalTitle}>Atenção</Text>
+      
+                  <Text style={styles.modalErrorMessage}>
+                  Atendimento excluido com sucesso
+                  </Text>
+      
+                  <TouchableOpacity
+                    style={styles.modalButton}
+                    onPress={() => setModalError(false)}
+                  >
+                    <Text style={styles.modalButtonText}>OK</Text>
+                  </TouchableOpacity>
+      
+                </View>
+              </View>
+            </Modal>
+
 
     </ScrollView>
   );
@@ -500,26 +557,143 @@ if (dataEhFutura(data)) {
 
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: '#ffffff', padding: 20 },
-  title: { fontSize: 26, color: '#37758a', fontWeight: '700', textAlign: 'center', marginBottom: 20 },
-  sectionTitle: { color: '#37758a', fontSize: 18, fontWeight: '700', marginBottom: 12, marginTop: 10 },
-  card: { backgroundColor: '#d9e3e8', borderRadius: 15, padding: 15, marginBottom: 20 },
-  label: { color: '#37758a', fontWeight: '600', fontSize: 16, marginTop: 10 },
-  input: { backgroundColor: '#ffffff', borderRadius: 10, padding: 12, fontSize: 16, marginTop: 5, borderWidth: 1, borderColor: '#b6c4cc', color: '#333' },
-  textArea: { height: 120, textAlignVertical: 'top' },
-  btnCadastrar: { backgroundColor: '#37758a', padding: 15, borderRadius: 15, alignItems: 'center', marginTop: 10 },
-  txtCadastrar: { color: '#ffffff', fontSize: 18, fontWeight: '700' },
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', alignItems: 'center' },
-  modalContent: { width: '80%', borderRadius: 20, padding: 25, alignItems: 'center', backgroundColor: '#fff' },
-  modalButton: { backgroundColor: '#37758a', borderRadius: 20, paddingVertical: 10, paddingHorizontal: 30 },
-  modalButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  modalTitle: { fontSize: 22, fontWeight: '700', color: '#37758a', textAlign: 'center', marginBottom: 15 },
-  actionRow: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 18, marginTop: 12 },
+  // Layout geral
+  container: { 
+    flex: 1, 
+    backgroundColor: '#ffffff',
+    padding: 20
+  },
 
-  // modal de erro
+  // Títulos
+  title: { 
+    fontSize: 26, 
+    color: '#37758a', 
+    fontWeight: '700', 
+    textAlign: 'center', 
+    marginBottom: 20 
+  },
+
+  sectionTitle: { 
+    color: '#37758a', 
+    fontSize: 18, 
+    fontWeight: '700',
+    marginBottom: 12, 
+    marginTop: 10 
+  },
+
+  // Card
+  card: { 
+    backgroundColor: '#d9e3e8',
+    borderRadius: 15, 
+    padding: 15,
+    marginBottom: 20
+  },
+
+  // Textos
+  label: { 
+    color: '#37758a', 
+    fontWeight: '600', 
+    fontSize: 16,
+    marginTop: 10
+  },
+
+  value: { 
+    color: '#333333',
+    fontSize: 16 
+  },
+
+  item: { 
+    color: '#333333',
+    fontSize: 16,
+    marginBottom: 4 
+  },
+
+  // Inputs
+  input: { 
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 5,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#b6c4cc', 
+    color: '#333'
+  },
+
+  textArea: { 
+    height: 120, 
+    textAlignVertical: 'top' 
+  },
+
+  // Botão principal
+  btnCadastrar: { 
+    backgroundColor: '#37758a', 
+    padding: 15, 
+    borderRadius: 15, 
+    alignItems: 'center', 
+    marginTop: 10 
+  },
+
+  txtCadastrar: { 
+    color: '#ffffff', 
+    fontSize: 18, 
+    fontWeight: '700' 
+  },
+
+  // Linha de ações (editar/apagar)
+  actionRow: { 
+    flexDirection: 'row', 
+    justifyContent: 'flex-end',
+    alignItems: 'center', 
+    gap: 18,
+    marginTop: 12 
+  },
+
+  // MODAIS -----------------------------------------
+
+  modalOverlay: { 
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center' 
+  },
+
+  modalContent: { 
+    width: '80%',
+    borderRadius: 20,
+    padding: 25,
+    alignItems: 'center',
+    backgroundColor: '#fff' 
+  },
+
+  modalTitle: { 
+    fontSize: 22, 
+    fontWeight: '700', 
+    color: '#37758a', 
+    textAlign: 'center', 
+    marginBottom: 15 
+  },
+
+  modalButton: { 
+    backgroundColor: '#37758a', 
+    borderRadius: 20, 
+    paddingVertical: 10, 
+    paddingHorizontal: 30, 
+    marginTop: 10 
+  },
+
+  modalButtonText: { 
+    color: '#fff', 
+    fontSize: 16, 
+    fontWeight: '700' 
+  },
+
+  // Modal de ERRO
   modalErrorBox: {
-
-    backgroundColor: "#ffebee", 
+    backgroundColor: "#ffebee",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
     paddingTop: 25
   },
 
@@ -530,18 +704,34 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
 
-  // modal de sucesso
-modalSucessoBox: {
-  backgroundColor: "#e8f5e9",
-  paddingTop: 25
-},
+  // Modal de SUCESSO
+  modalSucessoBox: {
+    backgroundColor: "#e8f5e9",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    paddingTop: 25
+  },
 
-modalSucessoMessage: {
-  fontSize: 18,
-  color: "#2e7d32",
-  textAlign: "center",
-  marginBottom: 20,
-  fontWeight: "600"
-},
+  modalSucessoMessage: {
+    fontSize: 18,
+    color: "#2e7d32",
+    textAlign: "center",
+    marginBottom: 20,
+    fontWeight: "600"
+  },
 
+  // Botão Editar dentro do card
+  botaoEditarCard: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#37758a',
+    padding: 8,
+    borderRadius: 20,
+    zIndex: 10
+  }
 });
+
+
+
