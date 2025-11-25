@@ -447,14 +447,23 @@ app.get('/avaliacao', auth, async (req, res) => {
 });
 
 // Criar atendimento
+// Criar avaliação
 app.post('/avaliacao', auth, async (req, res) => {
   try {
-    const {data, nota, descricao, pacienteId} = req.body;
+    const { data, nota, descricao } = req.body;
 
-    if (!data || !nota || !descricao || !pacienteId) {
+    // Valida os campos obrigatórios
+    if (!data || !nota || !descricao) {
       return res.status(400).json({ error: true, message: 'Todos os campos são obrigatórios!' });
     }
 
+    // Pega o pacienteId do token decodificado no middleware
+    const pacienteId = req.user.id;
+    if (!pacienteId) {
+      return res.status(401).json({ error: true, message: 'Token inválido ou usuário não encontrado!' });
+    }
+
+    // Insere a avaliação no banco
     const [result] = await pool.execute(
       'INSERT INTO avaliacao (data, nota, descricao, pacienteId) VALUES (?, ?, ?, ?)',
       [data, nota, descricao, pacienteId]
@@ -471,6 +480,7 @@ app.post('/avaliacao', auth, async (req, res) => {
     res.status(500).json({ error: true, message: 'Erro interno ao criar avaliação!' });
   }
 });
+
 
 // Buscar por ID
 app.get('/avaliacao/:id', auth, async (req, res) => {

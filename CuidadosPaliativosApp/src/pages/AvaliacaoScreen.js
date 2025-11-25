@@ -2,26 +2,22 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwtDecode from 'jwt-decode'; // ✅ Import correto
 
 export default function AvaliacaoScreen() {
-
   const BASE_URL = "http://10.136.133.229:3000/";
+
   const [estrelas, setEstrelas] = useState(0);
   const [descricao, setDescricao] = useState('');
-  const [modalSucesso, setModalSucesso] = useState(false);
-  const [modalErro, setModalErro] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const parseJwt = (token) => {
-    try {
-      return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-      return null;
-    }
-  };
+  const [modalSucesso, setModalSucesso] = useState(false);
+  const [modalErro, setModalErro] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const enviarAvaliacao = async () => {
     if (estrelas === 0 || descricao.trim() === '') {
+      setModalMessage("Por favor, selecione uma avaliação e escreva um comentário.");
       setModalErro(true);
       return;
     }
@@ -31,18 +27,22 @@ export default function AvaliacaoScreen() {
 
       const token = await AsyncStorage.getItem("TOKEN");
       if (!token) {
+        setModalMessage("Token não encontrado. Faça login novamente!");
         setModalErro(true);
         return;
       }
 
-      const decoded = parseJwt(token);
-      if (!decoded || !decoded.id) {
+      let decoded;
+      try {
+        decoded = jwtDecode(token);
+      } catch (e) {
+        setModalMessage("Token inválido!");
         setModalErro(true);
         return;
       }
 
       const pacienteId = decoded.id;
-      const dataAtual = new Date().toISOString(); // data atual em ISO
+      const dataAtual = new Date().toISOString();
 
       const res = await fetch(`${BASE_URL}avaliacao`, {
         method: "POST",
@@ -58,19 +58,19 @@ export default function AvaliacaoScreen() {
         })
       });
 
-      const json = await res.json();
-
       if (!res.ok) {
-        console.error(json);
-        setModalErro(true);
-      } else {
-        setModalSucesso(true);
-        setEstrelas(0);
-        setDescricao('');
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || "Erro ao enviar avaliação");
       }
 
-    } catch (error) {
-      console.error(error);
+      setModalMessage("Avaliação enviada com sucesso!");
+      setModalSucesso(true);
+      setEstrelas(0);
+      setDescricao('');
+
+    } catch (err) {
+      console.error("Erro ao enviar avaliação:", err);
+      setModalMessage(err.message || "Erro ao enviar avaliação!");
       setModalErro(true);
     } finally {
       setLoading(false);
@@ -107,9 +107,9 @@ export default function AvaliacaoScreen() {
       </View>
 
       <TouchableOpacity
-        style={styles.btnEnviar}
-        onPress={enviarAvaliacao}
+        style={[styles.btnEnviar, loading && { opacity: 0.7 }]}
         disabled={loading}
+        onPress={enviarAvaliacao}
       >
         <Text style={styles.txtEnviar}>{loading ? "Enviando..." : "Enviar Avaliação"}</Text>
       </TouchableOpacity>
@@ -119,7 +119,7 @@ export default function AvaliacaoScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, styles.modalSucessoBox]}>
             <Icon name="check-circle" size={55} color="#4CAF50" style={{ marginBottom: 10 }} />
-            <Text style={styles.modalSucessoMessage}>Avaliação enviada com sucesso!</Text>
+            <Text style={styles.modalSucessoMessage}>{modalMessage}</Text>
             <TouchableOpacity style={styles.modalButton} onPress={() => setModalSucesso(false)}>
               <Text style={styles.modalButtonText}>OK</Text>
             </TouchableOpacity>
@@ -133,7 +133,7 @@ export default function AvaliacaoScreen() {
           <View style={[styles.modalContent, styles.modalErrorBox]}>
             <Icon name="error" size={55} color="#f44336" style={{ marginBottom: 10 }} />
             <Text style={styles.modalTitle}>Atenção</Text>
-            <Text style={styles.modalErrorMessage}>Por favor, selecione uma avaliação, escreva um comentário ou verifique sua autenticação.</Text>
+            <Text style={styles.modalErrorMessage}>{modalMessage}</Text>
             <TouchableOpacity style={styles.modalButton} onPress={() => setModalErro(false)}>
               <Text style={styles.modalButtonText}>OK</Text>
             </TouchableOpacity>

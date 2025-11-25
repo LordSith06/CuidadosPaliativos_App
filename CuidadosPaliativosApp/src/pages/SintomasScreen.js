@@ -150,11 +150,6 @@ export default function ProntuarioScreen() {
             ⚠️ Você selecionou vários sintomas. Procure atendimento imediatamente.
           </Text>
         )}
-
-        <TouchableOpacity style={Estilo.btnEnviar} onPress={enviarProntuario} disabled={loading}>
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={Estilo.txtEnviar}>Enviar Prontuário</Text>}
-        </TouchableOpacity>
-
       </ScrollView>
 
       {/* Modal Sucesso */}

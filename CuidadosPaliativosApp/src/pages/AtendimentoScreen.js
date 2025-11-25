@@ -1,4 +1,3 @@
-/* CÓDIGO COMPLETO MODIFICADO COM O MODAL DE ERRO NO TEMA CORRETO */
 
 import React, { useState, useEffect } from 'react';
 import {
