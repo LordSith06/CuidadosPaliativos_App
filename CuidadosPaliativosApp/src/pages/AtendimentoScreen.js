@@ -1,3 +1,5 @@
+/* CÓDIGO COMPLETO MODIFICADO COM O MODAL DE ERRO NO TEMA CORRETO */
+
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -11,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = "http://10.0.1.20:3000/";
+const BASE_URL = "http://192.168.0.226:3000/";
 
 export default function AtendimentoScreen({ route, navigation }) {
   const [data, setData] = useState('');
@@ -28,7 +30,12 @@ export default function AtendimentoScreen({ route, navigation }) {
 
   const [token, setToken] = useState('');
 
-  // Estados novos para edição
+  // Modal de erro ao não preencher campos
+  const [modalErroCampos, setModalErroCampos] = useState(false);
+
+  const [modalData, setModalData] = useState(false);
+
+  // Modal de edição
   const [modalEditarVisible, setModalEditarVisible] = useState(false);
   const [atendimentoEditando, setAtendimentoEditando] = useState(null);
 
@@ -64,13 +71,30 @@ export default function AtendimentoScreen({ route, navigation }) {
     }
   };
 
+  const dataEhFutura = (dataTexto) => {
+  // dataTexto vem no formato DD/MM/YYYY
+  const [dia, mes, ano] = dataTexto.split("/").map(Number);
+
+  const dataInformada = new Date(ano, mes - 1, dia);
+  const hoje = new Date();
+  
+  // Zerar horário para comparação correta
+  hoje.setHours(0, 0, 0, 0);
+  dataInformada.setHours(0, 0, 0, 0);
+
+  return dataInformada > hoje;
+};
+
   const cadastrarAtendimento = async () => {
     if (!data || !medico || !descricao) {
-      setModalMessage("Preencha todos os campos!");
-      setModalSuccess(false);
-      setModalVisible(true)
-      return;
-    }
+  setModalErroCampos(true);
+  return;
+}
+// Verificar se data é futura
+if (dataEhFutura(data)) {
+  setModalData(true);
+  return;
+}
 
     try {
       const token = await AsyncStorage.getItem("TOKEN");
@@ -173,7 +197,6 @@ export default function AtendimentoScreen({ route, navigation }) {
     }
   };
 
-  // 👉 FUNÇÃO DE SALVAR A EDIÇÃO (PUT)
   const handleSalvarEdicao = async () => {
     try {
       const token = await AsyncStorage.getItem("TOKEN");
@@ -202,7 +225,6 @@ export default function AtendimentoScreen({ route, navigation }) {
     }
   };
 
-  // 👉 FUNÇÃO DE EXCLUIR
   const handleExcluir = async (id) => {
     try {
       const token = await AsyncStorage.getItem("TOKEN");
@@ -233,8 +255,7 @@ export default function AtendimentoScreen({ route, navigation }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Cadastro de Atendimento</Text>
-
+      
       <Text style={styles.sectionTitle}>🩺 Informações do Atendimento</Text>
 
       <View style={styles.card}>
@@ -285,7 +306,7 @@ export default function AtendimentoScreen({ route, navigation }) {
         <Text style={styles.txtCadastrar}>Listar Atendimentos</Text>
       </TouchableOpacity>
 
-      {/* Modal da Lista de Atendimentos */}
+      {/* Modal Lista */}
       <Modal animationType="slide" transparent visible={modalListaVisible}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { width: '90%', maxHeight: '80%' }]}>
@@ -301,7 +322,6 @@ export default function AtendimentoScreen({ route, navigation }) {
 
                   <View style={styles.actionRow}>
                     
-                    {/* EDITAR */}
                     <TouchableOpacity
                       onPress={() => {
                         setAtendimentoEditando(item);
@@ -311,7 +331,6 @@ export default function AtendimentoScreen({ route, navigation }) {
                       <Icon name="edit" size={28} color="#37758a" />
                     </TouchableOpacity>
 
-                    {/* EXCLUIR */}
                     <TouchableOpacity
                       onPress={() => handleExcluir(item.id)}
                     >
@@ -334,7 +353,7 @@ export default function AtendimentoScreen({ route, navigation }) {
         </View>
       </Modal>
 
-      {/* Modal de EDIÇÃO */}
+      {/* Modal de Edição */}
       <Modal animationType="slide" transparent visible={modalEditarVisible}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { width: '90%' }]}>
@@ -387,9 +406,93 @@ export default function AtendimentoScreen({ route, navigation }) {
         </View>
       </Modal>
 
+      <Modal animationType="fade" transparent visible={modalErroCampos}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, styles.modalErrorBox]}>
+            
+            <Icon 
+              name="error" 
+              size={55} 
+              color="#f44336"
+              style={{ marginBottom: 10 }}
+            />
+
+            <Text style={styles.modalTitle}>Atenção</Text>
+
+            <Text style={styles.modalErrorMessage}>
+              Preencha todos os campos antes de continuar!
+            </Text>
+
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setModalErroCampos(false)}
+            >
+              <Text style={styles.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+
+          </View>
+        </View>
+      </Modal>
+
+       <Modal animationType="fade" transparent visible={modalData}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, styles.modalErrorBox]}>
+            
+            <Icon 
+              name="error" 
+              size={55} 
+              color="#f44336"
+              style={{ marginBottom: 10 }}
+            />
+
+            <Text style={styles.modalTitle}>Atenção</Text>
+
+            <Text style={styles.modalErrorMessage}>
+              A data do atendimento não pode ser no futuro!
+            </Text>
+
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setModalData(false)}
+            >
+              <Text style={styles.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+
+          </View>
+        </View>
+      </Modal>
+
+<Modal animationType="fade" transparent visible={modalVisible}>
+  <View style={styles.modalOverlay}>
+    <View style={[styles.modalContent, styles.modalSucessoBox]}>
+
+      <Icon
+        name="check-circle"
+        size={55}
+        color="#4CAF50"
+        style={{ marginBottom: 10 }}
+      />
+
+      <Text style={styles.modalSucessoMessage}>
+        {modalMessage}
+      </Text>
+
+      <TouchableOpacity
+        style={styles.modalButton}
+        onPress={fecharModal}
+      >
+        <Text style={styles.modalButtonText}>OK</Text>
+      </TouchableOpacity>
+
+    </View>
+  </View>
+</Modal>
+
+
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flexGrow: 1, backgroundColor: '#ffffff', padding: 20 },
@@ -403,11 +506,37 @@ const styles = StyleSheet.create({
   txtCadastrar: { color: '#ffffff', fontSize: 18, fontWeight: '700' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', alignItems: 'center' },
   modalContent: { width: '80%', borderRadius: 20, padding: 25, alignItems: 'center', backgroundColor: '#fff' },
-  modalSuccess: { backgroundColor: '#e8f5e9' },
-  modalError: { backgroundColor: '#ffebee' },
-  modalText: { fontSize: 18, textAlign: 'center', marginVertical: 15, color: '#333' },
   modalButton: { backgroundColor: '#37758a', borderRadius: 20, paddingVertical: 10, paddingHorizontal: 30 },
   modalButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  modalTitle: { fontSize: 22, fontWeight: '700', color: '#000', textAlign: 'center', marginBottom: 15 },
+  modalTitle: { fontSize: 22, fontWeight: '700', color: '#37758a', textAlign: 'center', marginBottom: 15 },
   actionRow: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 18, marginTop: 12 },
+
+  // modal de erro
+  modalErrorBox: {
+
+    backgroundColor: "#ffebee", 
+    paddingTop: 25
+  },
+
+  modalErrorMessage: {
+    fontSize: 17,
+    color: '#555',
+    textAlign: 'center',
+    marginBottom: 20
+  },
+
+  // modal de sucesso
+modalSucessoBox: {
+  backgroundColor: "#e8f5e9",
+  paddingTop: 25
+},
+
+modalSucessoMessage: {
+  fontSize: 18,
+  color: "#2e7d32",
+  textAlign: "center",
+  marginBottom: 20,
+  fontWeight: "600"
+},
+
 });

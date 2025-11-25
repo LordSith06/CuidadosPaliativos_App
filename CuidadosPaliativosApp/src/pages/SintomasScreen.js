@@ -56,14 +56,11 @@ export default function ProntuarioScreen() {
   return (
     <View style={Estilo.container}>
 
-      {/* Header */}
-      <View style={Estilo.header}>
-        <Text style={Estilo.headerText}>Prontuário Diário</Text>
-      </View>
+    
 
       <ScrollView style={Estilo.content}>
 
-        <Text style={Estilo.sectionTitle}>📋 Verificação de Sintomas</Text>
+        <Text style={Estilo.sectionTitle}>📋 Verificação de Sintomas Diários</Text>
 
         <View style={Estilo.card}>
 
