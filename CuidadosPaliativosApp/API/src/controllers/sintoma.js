@@ -48,18 +48,21 @@ app.get('/sintoma', auth, async (req, res) => {
 
 app.post('/sintoma', auth, async (req, res) => {
   try {
-    const { pacienteId, acao } = req.body;
+    const { pacienteId, acao, data } = req.body;
 
-    if (!pacienteId || !acao) {
-      return res.status(400).json({ error: true, message: 'pacienteId e acao são obrigatórios!' });
+    if (!pacienteId || !acao || !data) {
+      return res.status(400).json({ 
+        error: true, 
+        message: 'pacienteId, acao e data são obrigatórios!' 
+      });
     }
 
     const sql = `
       INSERT INTO sintoma (pacienteId, acao, data)
-      VALUES (?, ?, NOW())
+      VALUES (?, ?, ?)
     `;
 
-    const [result] = await pool.execute(sql, [pacienteId, acao]);
+    const [result] = await pool.execute(sql, [pacienteId, acao, data]);
 
     res.status(201).json({
       error: false,
@@ -95,19 +98,19 @@ app.get('/sintoma/:id', auth, async (req, res) => {
 app.put('/sintoma/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { pacienteId, acao } = req.body;
+    const { pacienteId, acao, data } = req.body;
 
-    if (!pacienteId || !acao) {
-      return res.status(400).json({ error: true, message: 'pacienteId e acao são obrigatórios!' });
+    if (!pacienteId || !acao || !data) {
+      return res.status(400).json({ error: true, message: 'pacienteId, acao e data são obrigatórios!' });
     }
 
     const sql = `
       UPDATE sintoma
-      SET pacienteId = ?, acao = ?, data = NOW()
+      SET pacienteId = ?, acao = ?, data = ?
       WHERE id = ?
     `;
 
-    const [result] = await pool.execute(sql, [pacienteId, acao, id]);
+    const [result] = await pool.execute(sql, [pacienteId, acao, data, id]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: true, message: 'Registro não encontrado!' });
@@ -120,6 +123,7 @@ app.put('/sintoma/:id', auth, async (req, res) => {
     res.status(500).json({ error: true, message: 'Erro ao atualizar registro!' });
   }
 });
+
 
 app.delete('/sintoma/:id', auth, async (req, res) => {
   try {

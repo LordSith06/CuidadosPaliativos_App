@@ -13,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = "http://192.168.0.47:3000/";
+const BASE_URL = "http://10.136.133.229:3000/";
 
 export default function AtendimentoScreen({ route, navigation }) {
   const [data, setData] = useState('');
@@ -589,7 +589,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
 
-  // Textos
+
   label: { 
     color: '#37758a', 
     fontWeight: '600', 
@@ -608,7 +608,7 @@ const styles = StyleSheet.create({
     marginBottom: 4 
   },
 
-  // Inputs
+
   input: { 
     backgroundColor: '#ffffff',
     borderRadius: 10,
@@ -625,7 +625,6 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top' 
   },
 
-  // Botão principal
   btnCadastrar: { 
     backgroundColor: '#37758a', 
     padding: 15, 
@@ -640,7 +639,6 @@ const styles = StyleSheet.create({
     fontWeight: '700' 
   },
 
-  // Linha de ações (editar/apagar)
   actionRow: { 
     flexDirection: 'row', 
     justifyContent: 'flex-end',
@@ -688,7 +686,6 @@ const styles = StyleSheet.create({
     fontWeight: '700' 
   },
 
-  // Modal de ERRO
   modalErrorBox: {
     backgroundColor: "#ffebee",
     borderRadius: 20,
@@ -704,7 +701,6 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
 
-  // Modal de SUCESSO
   modalSucessoBox: {
     backgroundColor: "#e8f5e9",
     borderRadius: 20,
@@ -721,7 +717,7 @@ const styles = StyleSheet.create({
     fontWeight: "600"
   },
 
-  // Botão Editar dentro do card
+
   botaoEditarCard: {
     position: 'absolute',
     top: 10,

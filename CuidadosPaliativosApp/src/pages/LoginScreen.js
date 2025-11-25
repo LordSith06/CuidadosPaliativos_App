@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Modal} from
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // BRUNO: const BASE_URL = "http://192.168.0.7:3000";
-const BASE_URL = "http://192.168.0.47:3000";
+const BASE_URL = "http://10.136.133.229:3000";
 
 export default function LoginScreen({ navigation }) {
 

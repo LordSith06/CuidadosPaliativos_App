@@ -47,31 +47,41 @@ app.get('/avaliacao', auth, async (req, res) => {
   }
 });
 
-// Criar atendimento
 app.post('/avaliacao', auth, async (req, res) => {
   try {
-    const {data, nota, descricao, pacienteId} = req.body;
+    const { pacienteId, nota, descricao, data } = req.body;
 
-    if (!data || !nota || !descricao || !pacienteId) {
-      return res.status(400).json({ error: true, message: 'Todos os campos são obrigatórios!' });
+    if (!pacienteId || !nota || !descricao || !data) {
+      return res.status(400).json({ 
+        error: true, 
+        message: 'pacienteId, nota, descricao e data são obrigatórios!'
+      });
     }
 
-    const [result] = await pool.execute(
-      'INSERT INTO avaliacao (data, nota, descricao, pacienteId) VALUES (?, ?, ?, ?)',
-      [data, nota, descricao, pacienteId]
-    );
+    const sql = `
+      INSERT INTO avaliacao (pacienteId, nota, descricao, data)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    const [result] = await pool.execute(sql, [
+      pacienteId,
+      nota,
+      descricao,
+      data
+    ]);
 
     res.status(201).json({
       error: false,
-      message: 'Avaliação enviada com sucesso!',
+      message: 'Avaliação criada com sucesso!',
       id: result.insertId
     });
 
   } catch (error) {
-    console.error('Erro ao enviar avaliação:', error);
+    console.error('Erro interno ao criar avaliação:', error);
     res.status(500).json({ error: true, message: 'Erro interno ao criar avaliação!' });
   }
 });
+
 
 // Buscar por ID
 app.get('/avaliacao/:id', auth, async (req, res) => {

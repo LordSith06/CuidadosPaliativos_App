@@ -1,23 +1,80 @@
 import React, { useState } from 'react';
-import {View,Text,StyleSheet,TextInput,TouchableOpacity,ScrollView,Modal} from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AvaliacaoScreen() {
+
+  const BASE_URL = "http://10.136.133.229:3000/";
   const [estrelas, setEstrelas] = useState(0);
   const [descricao, setDescricao] = useState('');
   const [modalSucesso, setModalSucesso] = useState(false);
   const [modalErro, setModalErro] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const enviarAvaliacao = () => {
+  const parseJwt = (token) => {
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const enviarAvaliacao = async () => {
     if (estrelas === 0 || descricao.trim() === '') {
       setModalErro(true);
       return;
     }
 
-    // Aqui você chamaria sua API, por enquanto simulamos sucesso
-    setModalSucesso(true);
-    setEstrelas(0);
-    setDescricao('');
+    try {
+      setLoading(true);
+
+      const token = await AsyncStorage.getItem("TOKEN");
+      if (!token) {
+        setModalErro(true);
+        return;
+      }
+
+      const decoded = parseJwt(token);
+      if (!decoded || !decoded.id) {
+        setModalErro(true);
+        return;
+      }
+
+      const pacienteId = decoded.id;
+      const dataAtual = new Date().toISOString(); // data atual em ISO
+
+      const res = await fetch(`${BASE_URL}avaliacao`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          data: dataAtual,
+          nota: estrelas,
+          descricao,
+          pacienteId
+        })
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        console.error(json);
+        setModalErro(true);
+      } else {
+        setModalSucesso(true);
+        setEstrelas(0);
+        setDescricao('');
+      }
+
+    } catch (error) {
+      console.error(error);
+      setModalErro(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -52,27 +109,18 @@ export default function AvaliacaoScreen() {
       <TouchableOpacity
         style={styles.btnEnviar}
         onPress={enviarAvaliacao}
+        disabled={loading}
       >
-        <Text style={styles.txtEnviar}>Enviar Avaliação</Text>
+        <Text style={styles.txtEnviar}>{loading ? "Enviando..." : "Enviar Avaliação"}</Text>
       </TouchableOpacity>
 
       {/* Modal Sucesso */}
       <Modal animationType="fade" transparent visible={modalSucesso}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, styles.modalSucessoBox]}>
-            <Icon
-              name="check-circle"
-              size={55}
-              color="#4CAF50"
-              style={{ marginBottom: 10 }}
-            />
-            <Text style={styles.modalSucessoMessage}>
-              Avaliação enviada com sucesso!
-            </Text>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setModalSucesso(false)}
-            >
+            <Icon name="check-circle" size={55} color="#4CAF50" style={{ marginBottom: 10 }} />
+            <Text style={styles.modalSucessoMessage}>Avaliação enviada com sucesso!</Text>
+            <TouchableOpacity style={styles.modalButton} onPress={() => setModalSucesso(false)}>
               <Text style={styles.modalButtonText}>OK</Text>
             </TouchableOpacity>
           </View>
@@ -83,20 +131,10 @@ export default function AvaliacaoScreen() {
       <Modal animationType="fade" transparent visible={modalErro}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, styles.modalErrorBox]}>
-            <Icon
-              name="error"
-              size={55}
-              color="#f44336"
-              style={{ marginBottom: 10 }}
-            />
+            <Icon name="error" size={55} color="#f44336" style={{ marginBottom: 10 }} />
             <Text style={styles.modalTitle}>Atenção</Text>
-            <Text style={styles.modalErrorMessage}>
-              Por favor, selecione uma avaliação e escreva um comentário.
-            </Text>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setModalErro(false)}
-            >
+            <Text style={styles.modalErrorMessage}>Por favor, selecione uma avaliação, escreva um comentário ou verifique sua autenticação.</Text>
+            <TouchableOpacity style={styles.modalButton} onPress={() => setModalErro(false)}>
               <Text style={styles.modalButtonText}>OK</Text>
             </TouchableOpacity>
           </View>
@@ -113,7 +151,6 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center'
   },
-
   sectionTitle: { 
     color: '#37758a', 
     fontSize: 22, 
@@ -121,21 +158,18 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center'
   },
-
   card: { 
     backgroundColor: '#d9e3e8',
     borderRadius: 15, 
     padding: 15,
     marginBottom: 20
   },
-
   label: { 
     color: '#37758a', 
     fontWeight: '600', 
     fontSize: 16,
     marginTop: 10
   },
-
   input: { 
     backgroundColor: '#ffffff',
     borderRadius: 10,
@@ -146,18 +180,15 @@ const styles = StyleSheet.create({
     borderColor: '#b6c4cc', 
     color: '#333'
   },
-
   textArea: { 
     height: 100, 
     textAlignVertical: 'top' 
   },
-
   starsRow: {
     flexDirection: 'row',
     marginVertical: 10,
     gap: 10
   },
-
   btnEnviar: { 
     backgroundColor: '#37758a', 
     padding: 15, 
@@ -165,21 +196,17 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     marginTop: 10 
   },
-
   txtEnviar: { 
     color: '#ffffff', 
     fontSize: 18, 
     fontWeight: '700' 
   },
-
-  // MODAIS -----------------------------------------
   modalOverlay: { 
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center' 
   },
-
   modalContent: { 
     width: '80%',
     borderRadius: 20,
@@ -187,7 +214,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff' 
   },
-
   modalTitle: { 
     fontSize: 22, 
     fontWeight: '700', 
@@ -195,7 +221,6 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
     marginBottom: 15 
   },
-
   modalButton: { 
     backgroundColor: '#37758a', 
     borderRadius: 20, 
@@ -203,14 +228,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30, 
     marginTop: 10 
   },
-
   modalButtonText: { 
     color: '#fff', 
     fontSize: 16, 
     fontWeight: '700' 
   },
-
-  // Modal de ERRO
   modalErrorBox: {
     backgroundColor: "#ffebee",
     borderRadius: 20,
@@ -218,15 +240,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 25
   },
-
   modalErrorMessage: {
     fontSize: 17,
     color: '#555',
     textAlign: 'center',
     marginBottom: 20
   },
-
-  // Modal de SUCESSO
   modalSucessoBox: {
     backgroundColor: "#e8f5e9",
     borderRadius: 20,
@@ -234,7 +253,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 25
   },
-
   modalSucessoMessage: {
     fontSize: 18,
     color: "#2e7d32",

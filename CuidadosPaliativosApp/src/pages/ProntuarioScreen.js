@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Modal } 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const BASE_URL = "http://192.168.0.47:3000/";
+const BASE_URL = "http://10.136.133.229:3000/";
 
 export default function ProntuarioScreen({ navigation }) {
   const [paciente, setPaciente] = useState(null);
@@ -364,7 +364,7 @@ const Estilo = StyleSheet.create({
     marginBottom: 4 
   },
 
-  // Inputs
+  
   input: { 
     backgroundColor: '#ffffff',
     borderRadius: 10,
@@ -375,7 +375,7 @@ const Estilo = StyleSheet.create({
     borderColor: '#b6c4cc' 
   },
 
-  // Botão principal
+  
   botao: { 
     backgroundColor: '#37758a',
     padding: 15,
@@ -390,7 +390,7 @@ const Estilo = StyleSheet.create({
     fontWeight: '700' 
   },
 
-  // Overlay do modal
+
   modalOverlay: { 
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.6)',
@@ -398,7 +398,7 @@ const Estilo = StyleSheet.create({
     alignItems: 'center' 
   },
 
-  // Container do modal
+  
   modalContent: { 
     width: '80%',
     borderRadius: 20,
@@ -407,7 +407,7 @@ const Estilo = StyleSheet.create({
     backgroundColor: '#fff' 
   },
 
-  // Caixa de erro
+  
   modalErrorBox: {
     width: '80%',
     borderRadius: 20,
@@ -417,7 +417,7 @@ const Estilo = StyleSheet.create({
     paddingTop: 25
   },
 
-  // Título do modal
+  
   modalTitle: { 
     fontSize: 22, 
     fontWeight: '700', 
@@ -433,7 +433,7 @@ const Estilo = StyleSheet.create({
     marginBottom: 20
   },
 
-  // Botão dentro do modal
+
   modalButton: { 
     backgroundColor: '#37758a', 
     borderRadius: 20, 
@@ -453,7 +453,6 @@ const Estilo = StyleSheet.create({
   paddingTop: 25
 },
 
-  // Botão de editar no card
   botaoEditarCard: {
     position: 'absolute',
     top: 10,
