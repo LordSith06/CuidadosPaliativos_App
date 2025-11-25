@@ -17,11 +17,12 @@ export default function CadastroMedicamentoScreen({ navigation }) {
   const [nome, setNome] = useState('');
   const [mg, setMg] = useState('');
   const [descricao, setDescricao] = useState('');
-
+  const [modalEditSucess, setModalEditSucess] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalSuccess, setModalSuccess] = useState(false);
-  
+  const [modalEditError, setModalEditError] = useState(false);
+  const [modalExclude, setModalExclude] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [modalListaVisible, setModalListaVisible] = useState(false);
@@ -204,9 +205,7 @@ export default function CadastroMedicamentoScreen({ navigation }) {
 
       setMedicamentos(prev => prev.filter(m => m.id !== id));
 
-      setModalMessage("Medicamento excluído!");
-      setModalSuccess(true);
-      setModalVisible(true);
+      setModalExclude(true);
 
     } catch (err) {
       console.log("Erro ao excluir:", err);
@@ -227,9 +226,7 @@ const salvarEdicao = async () => {
     return;
   }
   if (!editNome || !editMg || !editDescricao) {
-    setModalMessage("Preencha todos os campos da edição!");
-    setModalSuccess(false);
-    setModalVisible(true);
+    setModalEditError(true);
     return;
   }
 
@@ -277,10 +274,7 @@ const salvarEdicao = async () => {
       m.id === editId ? { ...m, nome: editNome, miligramagem: editMg, descricao: editDescricao } : m
     ));
 
-    setModalEditarVisible(false);
-    setModalMessage("Medicamento atualizado!");
-    setModalSuccess(true);
-    setModalVisible(true);
+    setModalEditSucess(true);
 
   } catch (err) {
     console.log("Erro ao editar:", err);
@@ -466,6 +460,85 @@ const salvarEdicao = async () => {
           </View>
         </View>
       </Modal>
+
+      <Modal animationType="fade" transparent visible={modalEditSucess}>
+        <View style={Estilo.modalOverlay}>
+          <View style={[Estilo.modalContent, Estilo.modalSucessoBox]}>
+      
+            <Icon
+              name="check-circle"
+              size={55}
+              color="#4CAF50"
+              style={{ marginBottom: 10 }}
+            />
+      
+            <Text style={Estilo.modalSucessoMessage}>
+              Medicamento editado com sucesso
+            </Text>
+      
+            <TouchableOpacity
+              style={Estilo.modalButton}
+              onPress={() => setModalEditSucess(false)}
+          >
+            <Text style={Estilo.modalButtonText}>OK</Text>
+          </TouchableOpacity>
+
+      
+          </View>
+        </View>
+      </Modal>
+
+      <Modal animationType="fade" transparent visible={modalEditError}>
+                    <View style={Estilo.modalOverlay}>
+                      <View style={[Estilo.modalContent, Estilo.modalErrorBox]}>
+                        
+                        <Icon 
+                          name="error" 
+                          size={55} 
+                          color="#f44336"
+                          style={{ marginBottom: 10 }}
+                        />
+            
+                        <Text style={Estilo.modalErrorMessage}>
+                        Preencha todos os campos da edição!
+                        </Text>
+            
+                        <TouchableOpacity
+                          style={Estilo.modalButton}
+                          onPress={() => setModalEditError(false)}
+                        >
+                          <Text style={Estilo.modalButtonText}>OK</Text>
+                        </TouchableOpacity>
+            
+                      </View>
+                    </View>
+                  </Modal>
+
+                   <Modal animationType="fade" transparent visible={modalExclude}>
+                    <View style={Estilo.modalOverlay}>
+                      <View style={[Estilo.modalContent, Estilo.modalErrorBox]}>
+                        
+                        <Icon 
+                          name="error" 
+                          size={55} 
+                          color="#f44336"
+                          style={{ marginBottom: 10 }}
+                        />
+            
+                        <Text style={Estilo.modalErrorMessage}>
+                         Medicamento excluido com sucesso
+                        </Text>
+            
+                        <TouchableOpacity
+                          style={Estilo.modalButton}
+                          onPress={() => setModalExclude(false)}
+                        >
+                          <Text style={Estilo.modalButtonText}>OK</Text>
+                        </TouchableOpacity>
+            
+                      </View>
+                    </View>
+                  </Modal>
     </View>
   );
 }
@@ -558,4 +631,178 @@ const Estilo = StyleSheet.create({
     fontSize: 16, 
     fontWeight: '600' 
   },
+
+  container: { 
+    flex: 1, 
+    backgroundColor: '#ffffff',
+    padding: 20
+  },
+
+  // Títulos
+  title: { 
+    fontSize: 26, 
+    color: '#37758a', 
+    fontWeight: '700', 
+    textAlign: 'center', 
+    marginBottom: 20 
+  },
+
+  sectionTitle: { 
+    color: '#37758a', 
+    fontSize: 18, 
+    fontWeight: '700',
+    marginBottom: 12, 
+    marginTop: 10 
+  },
+
+  // Card
+  card: { 
+    backgroundColor: '#d9e3e8',
+    borderRadius: 15, 
+    padding: 15,
+    marginBottom: 20
+  },
+
+  // Textos
+  label: { 
+    color: '#37758a', 
+    fontWeight: '600', 
+    fontSize: 16,
+    marginTop: 10
+  },
+
+  value: { 
+    color: '#333333',
+    fontSize: 16 
+  },
+
+  item: { 
+    color: '#333333',
+    fontSize: 16,
+    marginBottom: 4 
+  },
+
+  // Inputs
+  input: { 
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 5,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#b6c4cc', 
+    color: '#333'
+  },
+
+  textArea: { 
+    height: 120, 
+    textAlignVertical: 'top' 
+  },
+
+  // Botão principal
+  btnCadastrar: { 
+    backgroundColor: '#37758a', 
+    padding: 15, 
+    borderRadius: 15, 
+    alignItems: 'center', 
+    marginTop: 10 
+  },
+
+  txtCadastrar: { 
+    color: '#ffffff', 
+    fontSize: 18, 
+    fontWeight: '700' 
+  },
+
+  // Linha de ações (editar/apagar)
+  actionRow: { 
+    flexDirection: 'row', 
+    justifyContent: 'flex-end',
+    alignItems: 'center', 
+    gap: 18,
+    marginTop: 12 
+  },
+
+  // MODAIS -----------------------------------------
+
+  modalOverlay: { 
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center' 
+  },
+
+  modalContent: { 
+    width: '80%',
+    borderRadius: 20,
+    padding: 25,
+    alignItems: 'center',
+    backgroundColor: '#fff' 
+  },
+
+  modalTitle: { 
+    fontSize: 22, 
+    fontWeight: '700', 
+    color: '#37758a', 
+    textAlign: 'center', 
+    marginBottom: 15 
+  },
+
+  modalButton: { 
+    backgroundColor: '#37758a', 
+    borderRadius: 20, 
+    paddingVertical: 10, 
+    paddingHorizontal: 30, 
+    marginTop: 10 
+  },
+
+  modalButtonText: { 
+    color: '#fff', 
+    fontSize: 16, 
+    fontWeight: '700' 
+  },
+
+  // Modal de ERRO
+  modalErrorBox: {
+    backgroundColor: "#ffebee",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    paddingTop: 25
+  },
+
+  modalErrorMessage: {
+    fontSize: 17,
+    color: '#555',
+    textAlign: 'center',
+    marginBottom: 20
+  },
+
+  // Modal de SUCESSO
+  modalSucessoBox: {
+    backgroundColor: "#e8f5e9",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    paddingTop: 25
+  },
+
+  modalSucessoMessage: {
+    fontSize: 18,
+    color: "#2e7d32",
+    textAlign: "center",
+    marginBottom: 20,
+    fontWeight: "600"
+  },
+
+  // Botão Editar dentro do card
+  botaoEditarCard: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#37758a',
+    padding: 8,
+    borderRadius: 20,
+    zIndex: 10
+  }
 });
