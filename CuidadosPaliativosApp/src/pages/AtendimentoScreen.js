@@ -198,32 +198,39 @@ if (dataEhFutura(data)) {
   };
 
   const handleSalvarEdicao = async () => {
-    try {
-      const token = await AsyncStorage.getItem("TOKEN");
+  try {
 
-      const res = await fetch(`${BASE_URL}atendimento/${atendimentoEditando.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(atendimentoEditando)
-      });
-
-      if (!res.ok) throw new Error("Erro ao atualizar atendimento");
-
-      setModalEditarVisible(false);
-      listarAtendimentos();
-
-      setModalMessage("Atendimento atualizado!");
-      setModalSuccess(true);
-      setModalVisible(true);
-
-    } catch (e) {
-      alert("Erro ao salvar edição");
-      console.log(e);
+    if (dataEhFutura(atendimentoEditando.data)) {
+      setModalData(true);
+      return;
     }
-  };
+
+    const token = await AsyncStorage.getItem("TOKEN");
+
+    const res = await fetch(`${BASE_URL}atendimento/${atendimentoEditando.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(atendimentoEditando)
+    });
+
+    if (!res.ok) throw new Error("Erro ao atualizar atendimento");
+
+    setModalEditarVisible(false);
+    listarAtendimentos();
+
+    setModalMessage("Atendimento atualizado!");
+    setModalSuccess(true);
+    setModalVisible(true);
+
+  } catch (e) {
+    alert("Erro ao salvar edição");
+    console.log(e);
+  }
+};
+
 
   const handleExcluir = async (id) => {
     try {
@@ -249,10 +256,8 @@ if (dataEhFutura(data)) {
   };
 
   const fecharModal = () => {
-    setModalVisible(false);
-    if (modalSuccess) navigation.goBack();
+  setModalVisible(false);
   };
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       
@@ -462,7 +467,7 @@ if (dataEhFutura(data)) {
         </View>
       </Modal>
 
-<Modal animationType="fade" transparent visible={modalVisible}>
+  <Modal animationType="fade" transparent visible={modalVisible}>
   <View style={styles.modalOverlay}>
     <View style={[styles.modalContent, styles.modalSucessoBox]}>
 
